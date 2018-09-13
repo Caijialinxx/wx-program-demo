@@ -1,0 +1,34 @@
+{
+  "pages": [
+    "pages/main/main",
+    "pages/signInOrUp/signInOrUp",
+    "pages/profile/profile",
+    "pages/logs/logs"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "勾勾TODO",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#dddddd",
+    "selectedColor": "#3cc51f",
+    "borderStyle": "black",
+    "backgroundColor": "#fff",
+    "list": [
+      {
+        "pagePath": "pages/main/main",
+        "iconPath": "pages/images/logo.png",
+        "selectedIconPath": "pages/images/logo-selected.png",
+        "text": "TODOS"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "iconPath": "pages/images/profile.png",
+        "selectedIconPath": "pages/images/profile-selected.png",
+        "text": "ME"
+      }
+    ]
+  }
+}
