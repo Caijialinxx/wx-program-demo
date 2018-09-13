@@ -1,0 +1,21 @@
+<!--pages/index/main.wxml-->
+<view class='container'>
+  <view class='header'>
+    <view class='add-container'>
+      <image class='add-image' src='imgs/add.png'></image>
+      <input class='add-input' placeholder='Add Todos...'></input>
+    </view>
+  </view>
+  <scroll-view scroll-y class='lists-container'>
+    <view class='horizontal-container' scroll-x wx:for="{{todos}}" wx:key="id">
+      <view class='item-container'>
+        <view data-id='{{item.id}}' bindtap='tapChangeState' class='icon-container'>
+          <icon class='icon {{item.status}}' type='{{item.status}}' size='22'></icon>
+        </view>
+        <view class='text-container'>
+          <text>{{item.content}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

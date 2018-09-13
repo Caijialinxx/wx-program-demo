@@ -1,9 +1,7 @@
 {
   "pages": [
     "pages/main/main",
-    "pages/signInOrUp/signInOrUp",
-    "pages/profile/profile",
-    "pages/logs/logs"
+    "pages/profile/profile"
   ],
   "window": {
     "backgroundTextStyle": "light",
