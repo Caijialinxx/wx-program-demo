@@ -1,5 +1,5 @@
 <view class='container'>
-  <block wx:if='{{hasUserInfo}}'>
+  <block wx:if='{{userInfo}}'>
     <view class='userInfo-container'>
       <image class='user-avatar' src='{{userInfo.avatarUrl}}'></image>
       <text class='user-name'>{{userInfo.nickName}}</text>
@@ -20,7 +20,7 @@
         </view>
       </view>
       <view class='logout wrapper'>
-        <navigator class='.logoutBtn' url='/signInOrUp/signInOrUp'>退出登录</navigator>
+        <navigator class='.logoutBtn' bindtap='logout' url='../login/login'>退出登录</navigator>
       </view>
     </view>
   </block>
@@ -30,14 +30,9 @@
     </view>
     <view class='options-container'>
       <view class='navigator-wrapper'>
-        <navigator class='.loginBtn' url='/signInOrUp/signInOrUp'>登录</navigator>
+        <navigator class='.loginBtn' url='../login/login'>登录</navigator>
         <text class='statement'>登录后可同步账号下的记录，否则数据只能临时保存</text>
       </view>
     </view>
   </block>
-  <!-- <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo">登录</button>
-    <block wx:else>
-      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-    </block> -->
 </view>
