@@ -2,13 +2,16 @@
   justify-content: space-between;
   padding: 50px 38px;
 }
-.self-container {
+form {
+  flex: 1;
+  margin: 20px 0;
   width: 100%;
+}
+.self-container {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  flex: 1;
-  margin: 20px 0;
+  height: 100%;
 }
 .input-container {
   border: 1rpx solid #eaeaea;
