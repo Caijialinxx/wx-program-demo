@@ -1,0 +1,25 @@
+<view class='container login'>
+  <view class='self-container'>
+    <view class='input-container'>
+      <image class='inputImg' src='imgs/email.png'></image>
+      <input value='' class='infoInput' bindinput='changeData' placeholder='you@example.com'></input>
+    </view>
+    <view class='input-container'>
+      <image class='inputImg' src='imgs/pwd.png'></image>
+      <input value='' class='infoInput' password bindinput='changeData' placeholder='password'></input>
+    </view>
+    <view class='options-container'>
+      <text bindtap='changeData'>没有账号？去注册</text>
+      <text bindtap='resetPassword'>忘记密码</text>
+    </view>
+    <view>
+      <button class='loginBtn' bindtap='verifyInfo'>登录</button>
+    </view>
+  </view>
+  <view class='wechat-container'>
+    <text>—— 使用微信快速登录 ——</text>
+    <button class='wechatBtn' open-type="getUserInfo" bindgetuserinfo="getUserInfo">
+      <image class='wechatImg' mode='aspectFit' src='imgs/wechat.png'></image>
+    </button>
+  </view>
+</view>
