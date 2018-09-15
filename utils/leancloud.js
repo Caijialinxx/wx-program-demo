@@ -2,6 +2,25 @@ const AV = require('../libs/av-weapp-min.js')
 const { appId, appKey } = require('../private.js')
 AV.init({ appId: appId, appKey: appKey })
 
+const TodoModel = {
+  fetch(successFn, errorFn) {
+    let query = new AV.Query('Todo');
+    query.addAscending('order').find().then((todos) => {
+      let items = todos.map((todo) => {
+        return {
+          id: todo.id,
+          order: todo.attributes.order,
+          content: todo.attributes.content,
+          status: todo.attributes.status
+        }
+      })
+      successFn.call(undefined, items)
+    }, (error) => {
+      errorFn.call(undefined, `错误消息：请求被终止，请检查网络是否正确连接！`)
+    })
+  },
+}
+
 function signUp(email, nickname, password, successFn, errorFn) {
   let user = new AV.User()
   user.setEmail(email)
@@ -96,7 +115,7 @@ function logOut() {
   return null
 }
 
-module.exports = { signUp, logIn, reset, getCurrentUser, logOut }
+module.exports = { TodoModel, signUp, logIn, reset, getCurrentUser, logOut }
 
 function getUserInfo(AVUser) {
   return {
