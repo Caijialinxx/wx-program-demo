@@ -80,7 +80,18 @@ function reset(email, successFn, errorFn) {
   })
 }
 
-module.exports = { signUp, logIn, reset }
+function getCurrentUser() {
+  let user = AV.User.current()
+  if (user) {
+    if (user.attributes.emailVerified) {
+      return getUserInfo(user)
+    }
+  } else {
+    return null
+  }
+}
+
+module.exports = { signUp, logIn, reset, getCurrentUser }
 
 function getUserInfo(AVUser) {
   return {
