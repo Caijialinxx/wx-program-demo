@@ -1,3 +1,4 @@
+import { logOut } from '../../utils/leancloud.js'
 const app = getApp()
 
 Page({
@@ -13,7 +14,7 @@ Page({
   },
   logout: function() {
     this.setData({
-      userInfo: null,
+      userInfo: logOut()
     })
     app.globalData.userInfo = null
   }

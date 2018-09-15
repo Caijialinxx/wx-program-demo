@@ -91,7 +91,12 @@ function getCurrentUser() {
   }
 }
 
-module.exports = { signUp, logIn, reset, getCurrentUser }
+function logOut() {
+  AV.User.logOut()
+  return null
+}
+
+module.exports = { signUp, logIn, reset, getCurrentUser, logOut }
 
 function getUserInfo(AVUser) {
   return {
