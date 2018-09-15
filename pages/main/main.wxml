@@ -1,4 +1,3 @@
-<!--pages/index/main.wxml-->
 <view class='container'>
   <view class='header'>
     <view class='add-container'>

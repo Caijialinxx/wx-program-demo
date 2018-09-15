@@ -27,7 +27,7 @@
 
 .lists-container {
   margin-top: 64px;
-  height: 100%;
+  flex: 1;
   padding: 0 18px;
   box-sizing: border-box;
 }
@@ -43,13 +43,12 @@
 .item-container {
   display: flex;
   flex-direction: row;
-  /* justify-content: space-between; */
   align-items: center;
 }
 .icon-container {
   width: 22px;
   height: 22px;
-  margin-right: 16px;
+  padding-right: 16px;
 }
 .icon {
   width: 100%;

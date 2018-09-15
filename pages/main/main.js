@@ -1,30 +1,33 @@
-// pages/main/main.js
+import { TodoModel } from '../../utils/leancloud.js'
+const app = getApp()
+
 Page({
   data: {
-    todos: [{
-        id: 1,
-        content: 'xxx',
-        status: 'success'
-    },
-      {
-        id: 2,
-        content: 'yyy',
-        status: 'undone'
-      },
-      {
-        id: 3,
-        content: 'zzz',
-        status: 'success'
-      },
-      {
-        id: 4,
-        content: 'abc',
-        status: 'undone'
-      }
-    ]
+    todos: []
   },
-  tapChangeState: function(e) {
-    console.log(e)
+  onLoad: function () {
+    this.showTodos()
+  },
+  onShow: function () {
+    this.showTodos()
+  },
+  showTodos: function () {
+    if (app.globalData.userInfo) {
+      TodoModel.fetch(items => {
+        this.setData({
+          todos: items
+        })
+      }, (error) => {
+        wx.showToast({
+          title: error,
+          icon: 'none'
+        })
+      })
+    } else {
+      this.setData({ todos: [] })
+    }
+  },
+  tapChangeState: function (e) {
     let todosCopy = JSON.parse(JSON.stringify(this.data.todos))
     let target = todosCopy.filter(item => item.id === e.currentTarget.dataset.id)[0]
     if (target.status === 'undone') {
