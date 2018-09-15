@@ -11,6 +11,7 @@ const TodoModel = {
           id: todo.id,
           order: todo.attributes.order,
           content: todo.attributes.content,
+          remark: todo.attributes.remark,
           status: todo.attributes.status
         }
       })
@@ -21,11 +22,9 @@ const TodoModel = {
   },
   update(type, item, successFn, errorFn) {
     let todo = AV.Object.createWithoutData('Todo', item.id)
-    if (type === 'status') {
-      todo.set('status', item.status);
-    } else if (type === 'order') {
-      todo.set('order', item.order);
-    }
+    type.map(key => {
+      todo.set(key, item[key])
+    })
     todo.save().then(() => {
       successFn.call(undefined, item)
     }, (error) => {

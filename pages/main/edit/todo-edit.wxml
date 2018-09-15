@@ -1,0 +1,28 @@
+<view class='edit container'>
+  <view class='item-container'>
+    <view data-target='status' bindtap='changeData' class='icon-container'>
+      <icon class='icon {{todo.status}}' type='{{todo.status}}' size='24'></icon>
+    </view>
+    <view class='text-container'>
+      <input data-target='content' class='edit-input' value='{{todo.content}}' bindinput='changeData'></input>
+    </view>
+  </view>
+  <view class='options-container'>
+    <view class='mutiple wrapper'>
+      <view class='sub-wrapper'>
+        <image class='option-image' src='../imgs/clock.png'></image>
+        <text>提醒我</text>
+      </view>
+      <view class='sub-wrapper'>
+        <image class='option-image' src='../imgs/calendar.png'></image>
+        <text>设置过期时间</text>
+      </view>
+    </view>
+    <view class='wrapper'>
+      <textarea data-target='remark' bindinput='changeData' value='{{todo.remark}}' placeholder='添加备注'></textarea>
+    </view>
+    <view class='save wrapper'>
+      <text bindtap='save'>保存更改</text>
+    </view>
+  </view>
+</view>

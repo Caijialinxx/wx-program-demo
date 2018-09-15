@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/main/main",
+    "pages/main/edit/todo-edit",
     "pages/profile/profile",
     "pages/signup/signup",
     "pages/login/login"

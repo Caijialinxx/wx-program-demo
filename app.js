@@ -26,6 +26,7 @@ App({
       })
     }
   },
+  dataBetweenPage: {},
   globalData: {
     userInfo: null
   }
