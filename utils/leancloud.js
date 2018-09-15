@@ -30,4 +30,25 @@ function logIn(email, password, successFn, errorFn) {
   })
 }
 
-module.exports = { logIn }
+function reset(email, successFn, errorFn) {
+  AV.User.requestPasswordReset(email).then(() => {
+    successFn.call(undefined)
+  }, (error) => {
+    switch (error.code) {
+      case -1:
+        errorFn.call(undefined, `请求被终止，请检查网络是否正确连接！`)
+        return;
+      case 204:
+        errorFn.call(undefined, `请提供注册时的电子邮箱！`)
+        return;
+      case 205:
+        errorFn.call(undefined, `该邮箱未注册，请检查或注册！`)
+        return;
+      default:
+        errorFn.call(undefined, `错误：${error.message}`)
+        return;
+    }
+  })
+}
+
+module.exports = { logIn, reset }

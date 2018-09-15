@@ -1,16 +1,31 @@
 const app = getApp()
-import { logIn } from '../../utils/leancloud.js'
+import { logIn, reset } from '../../utils/leancloud.js'
 
 Page({
+  data: {
+    email: '',
+    password: ''
+  },
   getUserInfo: function (e) {
     app.globalData.userInfo = e.detail.userInfo
     wx.navigateBack({
       delta: 1
     })
   },
-  verifyInfo: function (e) {
-    let { email, password } = e.detail.value,
-      index_at = email.indexOf('@'),
+  changeData: function (e) {
+    switch (e.currentTarget.dataset.target) {
+      case 'email':
+        this.setData({ email: e.detail.value })
+        break
+      case 'password':
+        this.setData({ password: e.detail.value })
+        break
+      default:
+        return
+    }
+  },
+  verifyInfo: function ({ detail: { value: { email, password } } }) {
+    let index_at = email.indexOf('@'),
       index_point = email.indexOf('.'),
       length_strAfterPoint = email.substr(index_point + 1).length
 
@@ -43,6 +58,38 @@ Page({
           title: error,
           icon: 'none'
         })
+      })
+    }
+  },
+  resetPassword: function () {
+    let email = this.data.email
+    if (email) {
+      wx.showModal({
+        title: '重置密码',
+        content: `我们将会向您的邮箱【${email}】发送重置密码的邮件，一旦设置成功，旧密码就会失效，您需要通过新密码重新登录。`,
+        success: ({ confirm }) => {
+          if (confirm) {
+            let success = () => {
+              wx.showToast({
+                title: '重置密码邮件已发送，请转至邮箱查收！',
+                icon: 'none'
+              })
+            },
+              error = (error) => {
+                wx.showToast({
+                  title: error,
+                  icon: 'none'
+                })
+              }
+            reset(email, success, error)
+          }
+        }
+      })
+    } else {
+      wx.showModal({
+        title: '请输入电子邮箱地址',
+        content: '请在登录页面的电子邮箱输入框中输入电子邮箱地址，然后再点击忘记密码。',
+        showCancel: false
       })
     }
   }
