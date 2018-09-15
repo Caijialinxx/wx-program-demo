@@ -19,6 +19,19 @@ const TodoModel = {
       errorFn.call(undefined, `错误消息：请求被终止，请检查网络是否正确连接！`)
     })
   },
+  update(type, item, successFn, errorFn) {
+    let todo = AV.Object.createWithoutData('Todo', item.id)
+    if (type === 'status') {
+      todo.set('status', item.status);
+    } else if (type === 'order') {
+      todo.set('order', item.order);
+    }
+    todo.save().then(() => {
+      successFn.call(undefined, item)
+    }, (error) => {
+      errorFn.call(undefined, error)
+    })
+  },
 }
 
 function signUp(email, nickname, password, successFn, errorFn) {

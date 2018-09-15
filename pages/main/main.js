@@ -35,8 +35,15 @@ Page({
     } else if (target.status === 'success') {
       target.status = 'undone'
     }
-    this.setData({
-      todos: todosCopy
+    TodoModel.update('status', target, (updated) => {
+      this.setData({
+        todos: todosCopy
+      })
+    }, (error) => {
+      wx.showToast({
+        title: error,
+        icon: 'none'
+      })
     })
   }
 })
