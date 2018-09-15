@@ -2,7 +2,9 @@
   <block wx:if='{{userInfo}}'>
     <view class='userInfo-container'>
       <image class='user-avatar' src='{{userInfo.avatarUrl}}'></image>
-      <text class='user-name'>{{userInfo.nickName}}</text>
+      <view class='text-container'>
+        <text class='user-name'>{{userInfo.nickName}}</text>
+      </view>
     </view>
     <view class='options-container'>
       <view class='wrapper'>

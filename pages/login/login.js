@@ -6,6 +6,11 @@ Page({
     email: '',
     password: ''
   },
+  onShow: function () {
+    if (app.globalData.userInfo) {
+      this.setData({ email: app.globalData.userInfo.email })
+    }
+  },
   getUserInfo: function (e) {
     app.globalData.userInfo = e.detail.userInfo
     wx.navigateBack({
