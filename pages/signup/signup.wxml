@@ -1,0 +1,28 @@
+<view class='signup container'>
+  <form bindsubmit='verifyInfo'>
+    <view class='self-container'>
+      <view class='input-container'>
+        <image class='inputImg' src='imgs/email.png'></image>
+        <input data-target='email' name='email' value='{{email}}' class='infoInput' bindinput='changeData' confirm-type='next' placeholder='you@example.com'></input>
+      </view>
+      <view class='input-container'>
+        <image class='inputImg' src='imgs/name.png'></image>
+        <input data-target='nickname' name='nickname' value='{{nickname}}' class='infoInput' bindinput='changeData' confirm-type='next' placeholder='give a nickname'></input>
+      </view>
+      <view class='input-container'>
+        <image class='inputImg' src='imgs/pwd.png'></image>
+        <input data-target='password' name='password' value='{{password}}' class='infoInput' password bindinput='changeData' confirm-type='next' placeholder='create a password'></input>
+      </view>
+      <view class='input-container'>
+        <image class='inputImg' src='imgs/pwd_confirm.png'></image>
+        <input data-target='password_confirm' name='password_confirm' value='{{password_confirm}}' class='infoInput' password bindinput='changeData' confirm-type='done' placeholder='confirm your password'></input>
+      </view>
+      <view class='options-container'>
+        <navigator url='' class='optionsText'>已有账号？去登录></navigator>
+      </view>
+      <view>
+        <button class='signupBtn' form-type='submit'>注册</button>
+      </view>
+    </view>
+  </form>
+</view>

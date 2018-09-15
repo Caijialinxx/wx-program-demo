@@ -2,6 +2,35 @@ const AV = require('../libs/av-weapp-min.js')
 const { appId, appKey } = require('../private.js')
 AV.init({ appId: appId, appKey: appKey })
 
+function signUp(email, nickname, password, successFn, errorFn) {
+  let user = new AV.User()
+  user.setEmail(email)
+  user.setUsername(nickname)
+  user.setPassword(password)
+  user.signUp().then((loggedInUser) => {
+    let user = getUserInfo(loggedInUser)
+    successFn.call(undefined, user)
+  }, (error) => {
+    switch (error.code) {
+      case -1:
+        errorFn.call(undefined, `请求被终止，请检查网络是否正确连接！`)
+        return;
+      case 125:
+        errorFn.call(undefined, `电子邮箱地址无效，请检查！`)
+        return;
+      case 203:
+        errorFn.call(undefined, `电子邮箱地址已被占用，请更换！`)
+        return;
+      case 218:
+        errorFn.call(undefined, `密码无效（不允许含空格），请重设！`)
+        return;
+      default:
+        errorFn.call(undefined, `${error.message}`)
+        return;
+    }
+  })
+}
+
 function logIn(email, password, successFn, errorFn) {
   AV.User.logIn(email, password).then((loggedInUser) => {
     let user = getUserInfo(loggedInUser)
@@ -51,4 +80,14 @@ function reset(email, successFn, errorFn) {
   })
 }
 
-module.exports = { logIn, reset }
+module.exports = { signUp, logIn, reset }
+
+function getUserInfo(AVUser) {
+  return {
+    id: AVUser.id,
+    email: AVUser.attributes.email,
+    nickName: AVUser.attributes.username,
+    emailVerified: AVUser.attributes.emailVerified,
+    avatarUrl: AVUser.attributes.avatarUrl
+  }
+}

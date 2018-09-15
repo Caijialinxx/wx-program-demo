@@ -2,6 +2,7 @@
   "pages": [
     "pages/main/main",
     "pages/profile/profile",
+    "pages/signup/signup",
     "pages/login/login"
   ],
   "window": {
