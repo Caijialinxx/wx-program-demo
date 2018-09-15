@@ -6,15 +6,15 @@
     </view>
   </view>
   <scroll-view scroll-y class='lists-container'>
-    <view class='horizontal-container' scroll-x wx:for="{{todos}}" wx:key="id">
-      <view class='item-container'>
-        <view data-id='{{item.id}}' bindtap='tapChangeState' class='icon-container'>
+    <block wx:for="{{todos}}" wx:key="id">
+      <view data-id='{{item.id}}' bindtap='updateTodo' class='item-container'>
+        <view class='icon-container'>
           <icon class='icon {{item.status}}' type='{{item.status}}' size='22'></icon>
         </view>
         <view class='text-container'>
-          <text>{{item.content}}</text>
+          <navigator class='edit-navigator' data-editable='{{true}}' url='./edit/todo-edit'>{{item.content}}</navigator>
         </view>
       </view>
-    </view>
+    </block>
   </scroll-view>
 </view>

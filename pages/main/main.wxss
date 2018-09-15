@@ -31,19 +31,11 @@
   padding: 0 18px;
   box-sizing: border-box;
 }
-.horizontal-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid #eaeaea;
-  box-sizing: border-box;
-}
 .item-container {
   display: flex;
-  flex-direction: row;
   align-items: center;
+  padding: 14px 0;
+  border-bottom: 1rpx solid #eaeaea;
 }
 .icon-container {
   width: 22px;
@@ -67,4 +59,7 @@
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.edit-navigator {
+  display: inline;
 }
