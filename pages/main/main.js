@@ -3,13 +3,43 @@ const app = getApp()
 
 Page({
   data: {
-    todos: []
+    todos: [],
+    todoDraft: '',
   },
   onLoad: function () {
     this.showTodos()
   },
   onShow: function () {
     this.showTodos()
+  },
+  changeData: function ({ detail: { value } }) {
+    this.setData({
+      todoDraft: value
+    })
+  },
+  addTodo: function () {
+    let todosCopy = JSON.parse(JSON.stringify(this.data.todos)),
+      newTodo = {
+        content: this.data.todoDraft,
+        status: 'undone',
+        remark: undefined,
+        order: todosCopy.length
+      }
+    TodoModel.create(newTodo,
+      (id) => {
+        newTodo.id = id
+        todosCopy.push(newTodo)
+        this.setData({
+          todoDraft: '',
+          todos: todosCopy
+        })
+      },
+      (error) => {
+        wx.showToast({
+          title: error,
+          icon: 'none'
+        })
+      })
   },
   showTodos: function () {
     if (app.globalData.userInfo) {

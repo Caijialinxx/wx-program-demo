@@ -2,7 +2,7 @@
   <view class='header'>
     <view class='add-container'>
       <image class='add-image' src='imgs/add.png'></image>
-      <input class='add-input' placeholder='Add Todos...'></input>
+      <input bindinput='changeData' bindconfirm='addTodo' value='{{todoDraft}}' class='add-input' placeholder='Add Todos...'></input>
     </view>
   </view>
   <scroll-view scroll-y class='lists-container'>

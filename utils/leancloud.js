@@ -3,6 +3,29 @@ const { appId, appKey } = require('../private.js')
 AV.init({ appId: appId, appKey: appKey })
 
 const TodoModel = {
+  create(item, successFn, errorFn) {
+    if (AV.User.current()) {
+      let Todo = AV.Object.extend('Todo')
+      let todo = new Todo()
+      todo.set('order', item.order)
+      todo.set('content', item.content)
+      todo.set('status', item.status)
+
+      let acl = new AV.ACL()
+      acl.setPublicReadAccess(false)
+      acl.setReadAccess(AV.User.current(), true)
+      acl.setWriteAccess(AV.User.current(), true)
+      todo.setACL(acl)
+
+      todo.save().then(function (todo) {
+        successFn.call(undefined, todo.id)
+      }, function (error) {
+        errorFn.call(undefined, error)
+      })
+    } else {
+      errorFn.call(undefined, '当前未登录！无法使用！')
+    }
+  },
   fetch(successFn, errorFn) {
     let query = new AV.Query('Todo');
     query.addAscending('order').find().then((todos) => {
