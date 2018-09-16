@@ -5,6 +5,7 @@ Page({
   data: {
     todos: [],
     todoDraft: '',
+    deletedTodos: [],
   },
   onLoad: function () {
     this.showTodos()
@@ -22,7 +23,7 @@ Page({
       newTodo = {
         content: this.data.todoDraft,
         status: 'undone',
-        remark: undefined,
+        remark: '',
         order: todosCopy.length
       }
     TodoModel.create(newTodo,
@@ -81,5 +82,41 @@ Page({
         })
       })
     }
+  },
+  deleteTodo: function ({ currentTarget: { dataset: { id } } }) {
+    let todosCopy = JSON.parse(JSON.stringify(this.data.todos)),
+      deletedTodosCopy = JSON.parse(JSON.stringify(this.data.deletedTodos)),
+      target = todosCopy.filter(item => item.id === id)[0]
+    wx.showModal({
+      title: '删除待办事项',
+      content: `确定要删除【${target.content}】吗？`,
+      success: ({ confirm }) => {
+        if (confirm) {
+          TodoModel.destroy(target.id, () => {
+            delete target.id
+            delete target.order
+            deletedTodosCopy.push(target)
+            todosCopy = todosCopy.filter(item => item.id !== undefined)
+            todosCopy.map((item, index) => { item.order = index })
+            TodoModel.reorderAll(todosCopy, () => {
+              this.setData({
+                todos: todosCopy,
+                deletedTodos: deletedTodosCopy
+              })
+            }, (error) => {
+              wx.showToast({
+                title: error,
+                icon: 'none'
+              })
+            })
+          }, (error) => {
+            wx.showToast({
+              title: error,
+              icon: 'none'
+            })
+          })
+        }
+      }
+    })
   }
 })

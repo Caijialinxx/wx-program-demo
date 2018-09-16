@@ -7,10 +7,9 @@ const TodoModel = {
     if (AV.User.current()) {
       let Todo = AV.Object.extend('Todo')
       let todo = new Todo()
-      todo.set('order', item.order)
-      todo.set('content', item.content)
-      todo.set('status', item.status)
-
+      for (let key in item) {
+        todo.set(key, item[key])
+      }
       let acl = new AV.ACL()
       acl.setPublicReadAccess(false)
       acl.setReadAccess(AV.User.current(), true)
@@ -54,6 +53,26 @@ const TodoModel = {
       errorFn.call(undefined, error)
     })
   },
+  reorderAll(items, successFn, errorFn) {
+    let todos = items.map(item => {
+      let todo = AV.Object.createWithoutData('Todo', item.id)
+      todo.set('order', item.order)
+      return todo
+    })
+    AV.Object.saveAll(todos).then(() => {
+      successFn.call(undefined)
+    }, (error) => {
+      errorFn.call(undefined)
+    })
+  },
+  destroy(id, successFn, errorFn) {
+    let todo = AV.Object.createWithoutData('Todo', id);
+    todo.destroy().then(() => {
+      successFn.call(undefined)
+    }, (error) => {
+      errorFn.call(undefined, error)
+    });
+  }
 }
 
 function signUp(email, nickname, password, successFn, errorFn) {
