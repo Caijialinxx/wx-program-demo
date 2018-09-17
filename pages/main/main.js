@@ -46,7 +46,7 @@ Page({
     if (app.globalData.userInfo) {
       TodoModel.fetch(items => {
         this.setData({
-          todos: items
+          todos: items.filter(item => item.status !== 'deleted')
         })
       }, (error) => {
         wx.showToast({

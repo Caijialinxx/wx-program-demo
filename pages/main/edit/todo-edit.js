@@ -5,11 +5,13 @@ Page({
   data: {
     todo: null,
     reminder: null,
+    overdue: '',
   },
   onLoad: function () {
     this.setData({
       todo: app.dataBetweenPage.editInfo,
-      reminder: app.dataBetweenPage.reminder
+      reminder: app.dataBetweenPage.reminder,
+      overdue: app.dataBetweenPage.overdue
     })
   },
   playAudio: function (successFn, errorFn) {
@@ -39,6 +41,18 @@ Page({
       })
     }
   },
+  setOverdue: function () {
+    if (this.data.overdue) {
+      this.setData({
+        overdue: ''
+      })
+    } else {
+      let date = new Date().toISOString().substr(0, 10)
+      this.setData({
+        overdue: date
+      })
+    }
+  },
   changeData: function(e) {
     if (e.type === 'change') {
       let reminderCopy = JSON.parse(JSON.stringify(this.data.reminder))
@@ -51,6 +65,10 @@ Page({
         reminderCopy.time = e.detail.value
         this.setData({
           reminder: reminderCopy
+        })
+      } else {
+        this.setData({
+          overdue: e.detail.value
         })
       }
     } else {
@@ -90,24 +108,46 @@ Page({
         icon: 'none'
       })
     })
-    let [year, month, date] = this.data.reminder.date.split('-'), [hour, minute] = this.data.reminder.time.split(':')
-    let duration = new Date(year, month - 1, date, hour, minute).getTime() - Date.now()
-    let clockid = setTimeout(this.playAudio.bind(undefined, () => {
-      wx.showModal({
-        title: '勾勾TODO',
-        content: todoCopy.content,
-        showCancel: false,
-        confirmText: '知道了',
-        success: ({ confirm }) => {
-          if (confirm)
-            clearTimeout(clockid)
-        }
-      })
-    }, (error) => {
-      wx.showToast({
-        title: error,
-        icon: 'none'
-      })
-    }), duration)
+    if (this.data.reminder) {
+      let [year, month, date] = this.data.reminder.date.split('-'), [hour, minute] = this.data.reminder.time.split(':')
+      let duration = new Date(year, month - 1, date, hour, minute).getTime() - Date.now()
+      let clockid = setTimeout(this.playAudio.bind(undefined, () => {
+        wx.showModal({
+          title: '勾勾TODO',
+          content: todoCopy.content,
+          showCancel: false,
+          confirmText: '知道了',
+          success: ({ confirm }) => {
+            if (confirm)
+              clearTimeout(clockid)
+          }
+        })
+      }, (error) => {
+        wx.showToast({
+          title: error,
+          icon: 'none'
+        })
+      }), duration)
+    }
+    if (this.data.overdue) {
+      let [year, month, date] = this.data.overdue.split('-')
+      let overDuration = new Date(year, month - 1, date).getTime() - Date.now()
+      let overdueClockID = setTimeout(() => {
+        todoCopy.status = 'deleted'
+        TodoModel.update(['status'], todoCopy, () => {
+          this.setData({
+            todo: todoCopy
+          })
+          clearTimeout(overdueClockID)
+          app.dataBetweenPage.editInfo = this.data.todo
+          app.dataBetweenPage.overdue = this.data.overdue
+        }, (error) => {
+          wx.showToast({
+            title: error,
+            icon: 'none'
+          })
+        })
+      }, overDuration)
+    }
   },
 })
