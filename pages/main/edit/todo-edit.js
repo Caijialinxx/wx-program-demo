@@ -3,27 +3,71 @@ const app = getApp()
 
 Page({
   data: {
-    todo: null
+    todo: null,
+    reminder: null,
   },
-  onLoad: function() {
+  onLoad: function () {
     this.setData({
-      todo: app.dataBetweenPage.editInfo
+      todo: app.dataBetweenPage.editInfo,
+      reminder: app.dataBetweenPage.reminder
     })
+  },
+  playAudio: function (successFn, errorFn) {
+    const innerAudioContext = wx.createInnerAudioContext()
+    innerAudioContext.autoplay = true
+    innerAudioContext.src = '/pages/tones/cute_tone.wav'
+    innerAudioContext.onPlay(() => {
+      successFn.call(undefined)
+    })
+    innerAudioContext.onError((res) => {
+      errorFn.call(undefined, res.errMsg)
+    })
+  },
+  setReminder: function () {
+    if (this.data.reminder) {
+      this.setData({
+        reminder: null
+      })
+    } else {
+      let date = new Date().toISOString().substr(0, 10),
+        time = new Date(Date.now() + 10800000).toTimeString().substr(0, 5)
+      this.setData({
+        reminder: {
+          date: date,
+          time: time
+        }
+      })
+    }
   },
   changeData: function(e) {
-    let todoCopy = JSON.parse(JSON.stringify(this.data.todo))
-    if (e.currentTarget.dataset.target === 'status') {
-      if (todoCopy.status === 'undone') {
-        todoCopy.status = 'success'
-      } else if (todoCopy.status === 'success') {
-        todoCopy.status = 'undone'
+    if (e.type === 'change') {
+      let reminderCopy = JSON.parse(JSON.stringify(this.data.reminder))
+      if (e.currentTarget.dataset.target === 'reminder-date') {
+        reminderCopy.date = e.detail.value
+        this.setData({
+          reminder: reminderCopy
+        })
+      } else if (e.currentTarget.dataset.target === 'reminder-time') {
+        reminderCopy.time = e.detail.value
+        this.setData({
+          reminder: reminderCopy
+        })
       }
     } else {
-      todoCopy[e.currentTarget.dataset.target] = e.detail.value
+      let todoCopy = JSON.parse(JSON.stringify(this.data.todo))
+      if (e.currentTarget.dataset.target === 'status') {
+        if (todoCopy.status === 'undone') {
+          todoCopy.status = 'success'
+        } else if (todoCopy.status === 'success') {
+          todoCopy.status = 'undone'
+        }
+      } else {
+        todoCopy[e.currentTarget.dataset.target] = e.detail.value
+      }
+      this.setData({
+        todo: todoCopy
+      })
     }
-    this.setData({
-      todo: todoCopy
-    })
   },
   save: function() {
     let todoCopy = JSON.parse(JSON.stringify(this.data.todo))
@@ -35,26 +79,35 @@ Page({
       this.setData({
         todo: todoCopy
       })
-      app.dataBetweenPage.editInfo = todoCopy
+      app.dataBetweenPage.editInfo = this.data.todo
+      app.dataBetweenPage.reminder = this.data.reminder
+      wx.showToast({
+        title: '保存成功',
+      })
     }, (error) => {
       wx.showToast({
         title: error,
         icon: 'none'
       })
     })
+    let [year, month, date] = this.data.reminder.date.split('-'), [hour, minute] = this.data.reminder.time.split(':')
+    let duration = new Date(year, month - 1, date, hour, minute).getTime() - Date.now()
+    let clockid = setTimeout(this.playAudio.bind(undefined, () => {
+      wx.showModal({
+        title: '勾勾TODO',
+        content: todoCopy.content,
+        showCancel: false,
+        confirmText: '知道了',
+        success: ({ confirm }) => {
+          if (confirm)
+            clearTimeout(clockid)
+        }
+      })
+    }, (error) => {
+      wx.showToast({
+        title: error,
+        icon: 'none'
+      })
+    }), duration)
   },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function() {},
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function() {
-
-  },
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function() {}
 })
