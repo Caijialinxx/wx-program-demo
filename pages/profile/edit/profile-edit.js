@@ -39,14 +39,22 @@ Page({
   changeData: function ({ detail: { value } }) {
     let userCopy = JSON.parse(JSON.stringify(this.data.userInfo))
     userCopy.username = value
-    this.setData({
-      userInfo: userCopy,
-    })
+    if (userCopy.username) {
+      this.setData({
+        userInfo: userCopy,
+      })
+    }
   },
-  changeName: function () {
+  changeName: function ({ detail: { value } }) {
     let userCopy = JSON.parse(JSON.stringify(this.data.userInfo))
-    UserModel.update('username', userCopy, () => {
-      app.globalData.userInfo = userCopy
+    if (value.trim() === '') {
+      userCopy.username = '勾勾用户'
+      this.setData({
+        userInfo: userCopy,
+      })
+    }
+    UserModel.update('username', this.data.userInfo, () => {
+      app.globalData.userInfo = this.data.userInfo
     }, (error) => {
       wx.showToast({
         title: error,
