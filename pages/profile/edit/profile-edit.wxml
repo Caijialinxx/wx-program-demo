@@ -1,0 +1,44 @@
+<view class='edit container'>
+  <view class='userInfo-container'>
+    <image class='user-avatar' src='{{userInfo.avatarUrl}}'></image>
+    <text>点击换头像</text>
+  </view>
+  <view class='wrapper'>
+    <view class='sub-wrapper'>
+      <text>昵称</text>
+      <block wx:if='{{userInfo.nickName}}'>
+        <text>{{userInfo.nickName}}</text>
+      </block>
+      <block wx:else>
+        <text>勾勾用户</text>
+      </block>
+    </view>
+    <view class='sub-wrapper'>
+      <text>邮箱</text>
+      <block wx:if='{{userInfo.emailVerified}}'>
+        <text>{{userInfo.email}}</text>
+      </block>
+      <block wx:else>
+        <text>去关联</text>
+      </block>
+    </view>
+    <view class='sub-wrapper'>
+      <text>微信</text>
+      <block wx:if='{{userInfo.authData.lc_weapp}}'>
+        <text>{{userInfo.authData.lc_weapp.openid}}</text>
+      </block>
+      <block wx:else>
+        <text>去关联</text>
+      </block>
+    </view>
+    <view class='sub-wrapper'>
+      <text>手机号</text>
+      <block wx:if='{{userInfo.mobilePhoneVerified}}'>
+        <text>{{userInfo.mobilePhoneNumber}}</text>
+      </block>
+      <block wx:else>
+        <text>去关联</text>
+      </block>
+    </view>
+  </view>
+</view>

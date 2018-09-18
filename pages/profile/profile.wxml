@@ -9,7 +9,7 @@
     <view class='options-container'>
       <view class='wrapper'>
         <image class='option-image' src='imgs/profile.png'></image>
-        <navigator url=''>个人信息</navigator>
+        <navigator url='./edit/profile-edit'>个人信息</navigator>
       </view>
       <view class='mutiple wrapper'>
         <view class='sub-wrapper'>

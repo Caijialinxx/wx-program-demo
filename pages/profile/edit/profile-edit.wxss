@@ -1,0 +1,48 @@
+.edit {
+  background-color: #fafafa;
+}
+.userInfo-container {
+  background-color: #fff;
+  padding: 16px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  font-size: 90%;
+  color: #888;
+}
+.user-avatar {
+  flex-shrink: 0;
+  border: 1rpx solid #eaeaea;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  margin-bottom: 12px;
+}
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0px 20px;
+  margin-top: 16px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+.sub-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1rpx solid #eaeaea;
+}
+.sub-wrapper:last-child {
+  border-bottom: none;
+}
+.input {
+  text-align: right;
+}
