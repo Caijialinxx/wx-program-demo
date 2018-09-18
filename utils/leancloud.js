@@ -72,6 +72,17 @@ const TodoModel = {
     }, (error) => {
       errorFn.call(undefined, error)
     });
+  },
+  deleteAll(items, successFn, errorFn) {
+    let todos = items.map(item => {
+      let todo = AV.Object.createWithoutData('Todo', item.id)
+      return todo
+    })
+    AV.Object.destroyAll(todos).then(() => {
+      successFn.call(undefined)
+    }, (error) => {
+      errorFn.call(undefined)
+    })
   }
 }
 

@@ -1,0 +1,19 @@
+<view class='sublist container'>
+  <view class='header'>
+    <icon class='header-icon' type='success' size='24'></icon>
+    <text class='header-title'>已完成</text>
+  </view>
+  <block wx:if='{{todos}}'>
+    <view class='list-container'>
+      <block wx:for="{{todos}}" wx:key="id">
+        <text class='item'>{{item.content}}</text>
+      </block>
+    </view>
+    <view bindtap='deleteAll' class='option-container'>
+      <text>清空已完成</text>
+    </view>
+  </block>
+  <block wx:else>
+    <view class='null-container'>空</view>
+  </block>
+</view>
