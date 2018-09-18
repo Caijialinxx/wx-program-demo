@@ -14,11 +14,11 @@
       <view class='mutiple wrapper'>
         <view class='sub-wrapper'>
           <image class='option-image' src='imgs/done.png'></image>
-          <navigator url=''>已完成</navigator>
+          <navigator class='option-navigator' url='../sublists/donelist'>已完成</navigator>
         </view>
         <view class='sub-wrapper'>
           <image class='option-image' src='imgs/bin.png'></image>
-          <navigator url=''>回收箱</navigator>
+          <navigator class='option-navigator' url='../sublists/binlist'>已过期</navigator>
         </view>
       </view>
       <view class='logout wrapper'>

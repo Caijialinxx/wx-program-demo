@@ -83,18 +83,21 @@
   width: 100%;
   display: flex;
   align-items: center;
-  padding-top: 15px;
-  padding-bottom: 15px;
-  border-bottom: 1rpx solid #eaeaea;
-}
-.sub-wrapper:last-child {
-  border-bottom: none;
 }
 .option-image {
   width: 20px;
   height: 20px;
   margin-right: 12px;
 }
+.option-navigator {
+  flex: 1;
+  padding: 15px 0;
+  border-bottom: 1rpx solid #eaeaea;
+}
+.sub-wrapper:last-child .option-navigator {
+  border-bottom: none;
+}
+
 .logout {
   color: red;
   margin: 20px 0;

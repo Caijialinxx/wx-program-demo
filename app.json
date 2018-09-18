@@ -3,6 +3,8 @@
     "pages/main/main",
     "pages/main/edit/todo-edit",
     "pages/profile/profile",
+    "pages/sublists/donelist",
+    "pages/sublists/binlist",
     "pages/signup/signup",
     "pages/login/login"
   ],
