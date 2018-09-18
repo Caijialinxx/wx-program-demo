@@ -132,6 +132,7 @@ function logIn(email, password, successFn, errorFn) {
         return;
       case 216:
         errorFn.call(undefined, `电子邮箱未通过验证，请先验证再登录！验证邮件已发送至您的邮箱（${email}），请转至邮箱查收并进行验证！`)
+        sendVerifyEmail(email)
         return;
       case 219:
         errorFn.call(undefined, `登录失败次数超过限制，请稍候再试！或者通过忘记密码重设密码。`)
@@ -198,4 +199,17 @@ function getUserInfo(AVUser) {
     mobilePhoneNumber: AVUser.attributes.mobilePhoneNumber,
     authData: AVUser.attributes.authData
   }
+}
+
+function sendVerifyEmail(email) {
+  AV.User.requestEmailVerify(email).then(() => { }, (error) => {
+    switch (error.code) {
+      case -1:
+        alert(`请求被终止，请检查网络是否正确连接！`)
+        return;
+      default:
+        alert(`错误消息：${error.message}`)
+        return;
+    }
+  })
 }
