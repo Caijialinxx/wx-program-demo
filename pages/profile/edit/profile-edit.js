@@ -1,9 +1,40 @@
-import { linkWeChat } from '../../../utils/leancloud.js'
+import { linkWeChat, UserModel, AV } from '../../../utils/leancloud.js'
 const app = getApp()
 
 Page({
   data: {
-    userInfo: app.globalData.userInfo,
+    userInfo: null,
+  },
+  onLoad: function () {
+    this.setData({
+      userInfo: app.globalData.userInfo,
+    })
+  },
+  changeAvatar: function () {
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['original', 'compressed'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        let userCopy = JSON.parse(JSON.stringify(this.data.userInfo))
+        new AV.File(userCopy.id, {
+          blob: { uri: res.tempFilePaths[0], },
+        }).save().then(file => {
+          userCopy.avatarUrl = file.url()
+          UserModel.update('avatarUrl', userCopy, () => {
+            this.setData({
+              userInfo: userCopy
+            })
+            app.globalData.userInfo = userCopy
+          }, (error) => {
+            wx.showToast({
+              title: error,
+              icon: 'none'
+            })
+          })
+        }).catch(console.error)
+      }
+    })
   },
   linkWeChat: function() {
     wx.showModal({

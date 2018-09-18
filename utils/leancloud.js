@@ -186,7 +186,19 @@ function linkWeChat() {
   user.linkWithWeapp().catch(console.error)
 }
 
-module.exports = { TodoModel, signUp, logIn, reset, getCurrentUser, logOut, linkWeChat }
+const UserModel = {
+  update(key, targetUser, successFn, errorFn) {
+    let user = AV.Object.createWithoutData('_User', targetUser.id)
+    user.set(key, targetUser[key])
+    user.save().then(() => {
+      successFn.call(undefined)
+    }, (error) => {
+      errorFn.call(undefined, error)
+    })
+  }
+}
+
+module.exports = { AV, UserModel, TodoModel, signUp, logIn, reset, getCurrentUser, logOut, linkWeChat }
 
 function getUserInfo(AVUser) {
   return {

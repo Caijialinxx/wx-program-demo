@@ -6,11 +6,9 @@ Page({
     userInfo: null,
   },
   onShow: function() {
-    if (!this.data.userInfo && app.globalData.userInfo) {
-      this.setData({
-        userInfo: app.globalData.userInfo,
-      })
-    }
+    this.setData({
+      userInfo: app.globalData.userInfo,
+    })
   },
   logout: function() {
     this.setData({

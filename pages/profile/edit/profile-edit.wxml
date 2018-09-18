@@ -1,6 +1,6 @@
 <view class='edit container'>
   <view class='userInfo-container'>
-    <image class='user-avatar' src='{{userInfo.avatarUrl}}'></image>
+    <image bindtap='changeAvatar' class='user-avatar' src='{{userInfo.avatarUrl}}'></image>
     <text>点击换头像</text>
   </view>
   <view class='wrapper'>
