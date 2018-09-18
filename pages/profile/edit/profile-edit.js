@@ -36,13 +36,31 @@ Page({
       }
     })
   },
-  linkWeChat: function() {
+  changeData: function ({ detail: { value } }) {
+    let userCopy = JSON.parse(JSON.stringify(this.data.userInfo))
+    userCopy.username = value
+    this.setData({
+      userInfo: userCopy,
+    })
+  },
+  changeName: function () {
+    let userCopy = JSON.parse(JSON.stringify(this.data.userInfo))
+    UserModel.update('username', userCopy, () => {
+      app.globalData.userInfo = userCopy
+    }, (error) => {
+      wx.showToast({
+        title: error,
+        icon: 'none'
+      })
+    })
+  },
+  linkWeChat: function () {
     wx.showModal({
       title: '关联账号',
       content: '确定要将勾勾TODO与您的微信关联？关联之后可使用微信一键登录',
       showCancel: true,
       success: function ({ confirm }) {
-        if(confirm){
+        if (confirm) {
           linkWeChat()
         }
       }

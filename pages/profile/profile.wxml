@@ -3,7 +3,7 @@
     <view class='userInfo-container'>
       <image class='user-avatar' src='{{userInfo.avatarUrl}}'></image>
       <view class='text-container'>
-        <text class='user-name'>{{userInfo.nickName}}</text>
+        <text class='user-name'>{{userInfo.username}}</text>
       </view>
     </view>
     <view class='options-container'>

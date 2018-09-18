@@ -6,8 +6,8 @@
   <view class='wrapper'>
     <view class='sub-wrapper'>
       <text>昵称</text>
-      <block wx:if='{{userInfo.nickName}}'>
-        <text>{{userInfo.nickName}}</text>
+      <block wx:if='{{userInfo.username}}'>
+        <input bindinput='changeData' bindblur='changeName' value='{{userInfo.username}}' class='input'></input>
       </block>
       <block wx:else>
         <text>勾勾用户</text>
