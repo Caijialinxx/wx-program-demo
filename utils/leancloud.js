@@ -180,7 +180,12 @@ function logOut() {
   return null
 }
 
-module.exports = { TodoModel, signUp, logIn, reset, getCurrentUser, logOut }
+function linkWeChat() {
+  let user = AV.User.current()
+  user.linkWithWeapp().catch(console.error)
+}
+
+module.exports = { TodoModel, signUp, logIn, reset, getCurrentUser, logOut, linkWeChat }
 
 function getUserInfo(AVUser) {
   return {
@@ -188,6 +193,9 @@ function getUserInfo(AVUser) {
     email: AVUser.attributes.email,
     nickName: AVUser.attributes.username,
     emailVerified: AVUser.attributes.emailVerified,
-    avatarUrl: AVUser.attributes.avatarUrl
+    avatarUrl: AVUser.attributes.avatarUrl,
+    mobilePhoneVerified: AVUser.attributes.mobilePhoneVerified,
+    mobilePhoneNumber: AVUser.attributes.mobilePhoneNumber,
+    authData: AVUser.attributes.authData
   }
 }

@@ -28,7 +28,7 @@
         <text>{{userInfo.authData.lc_weapp.openid}}</text>
       </block>
       <block wx:else>
-        <text>去关联</text>
+        <text bindtap='linkWeChat'>去关联</text>
       </block>
     </view>
     <view class='sub-wrapper'>
