@@ -24,11 +24,11 @@
     </view>
     <view class='sub-wrapper'>
       <text>微信</text>
-      <block wx:if='{{userInfo.authData.lc_weapp}}'>
-        <text>{{userInfo.authData.lc_weapp.openid}}</text>
+      <block wx:if='{{userInfo.weAppLinked}}'>
+        <text>{{userInfo.weAppName}}</text>
       </block>
       <block wx:else>
-        <text bindtap='linkWeChat'>去关联</text>
+        <button bindgetuserinfo='linkWeChat' open-type='getUserInfo' plain='true'>去关联</button>
       </block>
     </view>
     <view class='sub-wrapper'>

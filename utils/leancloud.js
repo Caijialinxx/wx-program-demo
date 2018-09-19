@@ -183,15 +183,17 @@ function logOut() {
 
 function linkWeChat() {
   let user = AV.User.current()
-  user.linkWithWeapp().catch(console.error)
+  return user.linkWithWeapp().catch(console.error)
 }
 
 const UserModel = {
-  update(key, targetUser, successFn, errorFn) {
+  update(keys, targetUser, successFn, errorFn) {
     let user = AV.Object.createWithoutData('_User', targetUser.id)
-    user.set(key, targetUser[key])
-    user.save().then(() => {
-      successFn.call(undefined)
+    keys.map(key => {
+      user.set(key, targetUser[key])
+    })
+    user.save().then((user) => {
+      successFn.call(undefined, user)
     }, (error) => {
       errorFn.call(undefined, error)
     })
@@ -204,12 +206,13 @@ function getUserInfo(AVUser) {
   return {
     id: AVUser.id,
     email: AVUser.attributes.email,
-    nickName: AVUser.attributes.username,
+    username: AVUser.attributes.username,
     emailVerified: AVUser.attributes.emailVerified,
     avatarUrl: AVUser.attributes.avatarUrl,
     mobilePhoneVerified: AVUser.attributes.mobilePhoneVerified,
     mobilePhoneNumber: AVUser.attributes.mobilePhoneNumber,
-    authData: AVUser.attributes.authData
+    weAppLinked: AVUser.attributes.weAppLinked,
+    weAppName: AVUser.attributes.weAppName,
   }
 }
 

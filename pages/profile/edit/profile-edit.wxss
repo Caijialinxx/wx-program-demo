@@ -46,3 +46,9 @@
 .input {
   text-align: right;
 }
+button[plain] {
+  line-height: 1em;
+  font-size: 1em;
+  margin: 0;
+  padding: 6px;
+}

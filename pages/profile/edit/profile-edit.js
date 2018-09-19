@@ -21,7 +21,7 @@ Page({
           blob: { uri: res.tempFilePaths[0], },
         }).save().then(file => {
           userCopy.avatarUrl = file.url()
-          UserModel.update('avatarUrl', userCopy, () => {
+          UserModel.update(['avatarUrl'], userCopy, () => {
             this.setData({
               userInfo: userCopy
             })
@@ -53,7 +53,7 @@ Page({
         userInfo: userCopy,
       })
     }
-    UserModel.update('username', this.data.userInfo, () => {
+    UserModel.update(['username'], this.data.userInfo, () => {
       app.globalData.userInfo = this.data.userInfo
     }, (error) => {
       wx.showToast({
@@ -62,16 +62,22 @@ Page({
       })
     })
   },
-  linkWeChat: function () {
-    wx.showModal({
-      title: '关联账号',
-      content: '确定要将勾勾TODO与您的微信关联？关联之后可使用微信一键登录',
-      showCancel: true,
-      success: function ({ confirm }) {
-        if (confirm) {
-          linkWeChat()
-        }
-      }
-    })
+  linkWeChat: function ({ detail }) {
+    if (detail.errMsg === 'getUserInfo:ok') {
+      linkWeChat().then(() => {
+        app.globalData.userInfo.weAppName = detail.userInfo.nickName
+        app.globalData.userInfo.weAppLinked = true
+        UserModel.update(['weAppName', 'weAppLinked'], app.globalData.userInfo, () => {
+          this.setData({
+            userInfo: app.globalData.userInfo,
+          })
+        }, (error) => {
+          wx.showToast({
+            title: error,
+            icon: 'none'
+          })
+        })
+      })
+    }
   }
 })
