@@ -197,7 +197,14 @@ const UserModel = {
     }, (error) => {
       errorFn.call(undefined, error)
     })
-  }
+  },
+  loginWithWeChat(successFn, errorFn) {
+    AV.User.loginWithWeapp().then(user => {
+      successFn.call(undefined, getUserInfo(user))
+    }, error => {
+      errorFn.call(undefined, error)
+    })
+  },
 }
 
 module.exports = { AV, UserModel, TodoModel, signUp, logIn, reset, getCurrentUser, logOut, linkWeChat }

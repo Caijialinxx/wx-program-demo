@@ -20,7 +20,7 @@
   </form>
   <view class='wechat-container'>
     <text>—— 使用微信快速登录 ——</text>
-    <button class='wechatBtn' open-type="getUserInfo" bindgetuserinfo="getUserInfo">
+    <button class='wechatBtn' open-type="getUserInfo" bindgetuserinfo="loginWithWeChat">
       <image class='wechatImg' mode='aspectFit' src='imgs/wechat.png'></image>
     </button>
   </view>

@@ -1,5 +1,5 @@
 const app = getApp()
-import { logIn, reset } from '../../utils/leancloud.js'
+import { logIn, reset, UserModel } from '../../utils/leancloud.js'
 
 Page({
   data: {
@@ -11,10 +11,17 @@ Page({
       this.setData({ email: app.globalData.userInfo.email })
     }
   },
-  getUserInfo: function (e) {
-    app.globalData.userInfo = e.detail.userInfo
-    wx.navigateBack({
-      delta: 1
+  loginWithWeChat: function () {
+    UserModel.loginWithWeChat((user) => {
+      app.globalData.userInfo = user
+      wx.navigateBack({
+        delta: 1
+      })
+    }, (error) => {
+      wx.showToast({
+        title: error,
+        icon: 'none'
+      })
     })
   },
   changeData: function (e) {
