@@ -15,11 +15,14 @@
     </view>
     <view class='sub-wrapper'>
       <text>邮箱</text>
-      <block wx:if='{{userInfo.emailVerified}}'>
+      <block wx:if='{{userInfo.emailVerified && userInfo.email}}'>
         <text>{{userInfo.email}}</text>
       </block>
+      <block wx:if='{{!userInfo.emailVerified && userInfo.email}}'>
+        <text>待验证</text>
+      </block>
       <block wx:else>
-        <text>去关联</text>
+        <button bindtap='showEmailSettingWindow' plain='true'>去关联</button>
       </block>
     </view>
     <view class='sub-wrapper'>
@@ -31,14 +34,32 @@
         <button bindgetuserinfo='linkWeChat' open-type='getUserInfo' plain='true'>去关联</button>
       </block>
     </view>
-    <view class='sub-wrapper'>
-      <text>手机号</text>
-      <block wx:if='{{userInfo.mobilePhoneVerified}}'>
-        <text>{{userInfo.mobilePhoneNumber}}</text>
-      </block>
-      <block wx:else>
-        <text>去关联</text>
-      </block>
-    </view>
+  </view>
+  <view wx:if='{{linkEmailNeeded}}' class='float-window'>
+    <form bindsubmit='linkEmail'>
+      <view class='header'>关联邮箱</view>
+      <view id='formInner' style='transform:{{transformValue}}' class='formInner-wrapper'>
+        <view class='emailInput-container'>
+          <view class='input-container'>
+            <text class='statement'>请输入需要关联的邮箱</text>
+            <input name='email' placeholder='you@example.com' confirm-type='next' class='emailBindInput'></input>
+          </view>
+          <view class='btns-container'>
+            <button bindtap='cancelLinkEmail' hover-class='none' plain='true'>放弃</button>
+            <button bindtap='nextSetPassword' hover-class='none' plain='true'>下一项</button>
+          </view>
+        </view>
+        <view class='passwordInput-container'>
+          <view class='input-container'>
+            <text class='statement'>请设置密码，设置成功后您可以使用邮箱和密码登录。</text>
+            <input name='password' placeholder='password' confirm-type='done' class='emailBindInput'></input>
+          </view>
+          <view class='btns-container'>
+            <button bindtap='previousSetEmail' hover-class='none' plain='true'>上一项</button>
+            <button form-type='submit' hover-class='none' plain='true'>完成</button>
+          </view>
+        </view>
+      </view>
+    </form>
   </view>
 </view>
