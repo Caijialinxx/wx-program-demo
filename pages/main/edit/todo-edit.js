@@ -6,6 +6,10 @@ Page({
     todo: null,
     reminder: null,
     overdue: '',
+    timeOutArr: {
+      reminder: [],
+      overdue: []
+    },
   },
   onLoad: function () {
     this.setData({
@@ -108,46 +112,74 @@ Page({
         icon: 'none'
       })
     })
+    let timeOutArrCopy = JSON.parse(JSON.stringify(this.data.timeOutArr))
     if (this.data.reminder) {
       let [year, month, date] = this.data.reminder.date.split('-'), [hour, minute] = this.data.reminder.time.split(':')
       let duration = new Date(year, month - 1, date, hour, minute).getTime() - Date.now()
-      let clockid = setTimeout(this.playAudio.bind(undefined, () => {
-        wx.showModal({
-          title: '勾勾TODO',
-          content: todoCopy.content,
-          showCancel: false,
-          confirmText: '知道了',
-          success: ({ confirm }) => {
-            if (confirm)
-              clearTimeout(clockid)
-          }
-        })
-      }, (error) => {
-        wx.showToast({
-          title: error,
-          icon: 'none'
-        })
-      }), duration)
-    }
-    if (this.data.overdue) {
-      let [year, month, date] = this.data.overdue.split('-')
-      let overDuration = new Date(year, month - 1, date).getTime() - Date.now()
-      let overdueClockID = setTimeout(() => {
-        todoCopy.status = 'deleted'
-        TodoModel.update(['status'], todoCopy, () => {
-          this.setData({
-            todo: todoCopy
+      let reminderClockID = setTimeout(
+        this.playAudio.bind(undefined, () => {
+          wx.showModal({
+            title: '勾勾TODO',
+            content: todoCopy.content,
+            showCancel: false,
+            confirmText: '知道了',
+            success: ({ confirm }) => {
+              if (confirm) {
+                clearTimeout(reminderClockID)
+                timeOutArrCopy.reminder.shift(reminderClockID)
+                this.setData({
+                  timeOutArr: timeOutArrCopy
+                })
+              }
+            }
           })
-          clearTimeout(overdueClockID)
-          app.dataBetweenPage.editInfo = this.data.todo
-          app.dataBetweenPage.overdue = this.data.overdue
         }, (error) => {
           wx.showToast({
             title: error,
             icon: 'none'
           })
-        })
-      }, overDuration)
+        }), duration)
+      timeOutArrCopy.reminder.push(reminderClockID)
+      if (timeOutArrCopy.reminder.length > 1) {
+        clearTimeout(timeOutArrCopy.reminder[0])
+        timeOutArrCopy.reminder.shift(timeOutArrCopy.reminder[0])
+      }
+    } else {
+      clearTimeout(timeOutArrCopy.reminder[0])
+      timeOutArrCopy.reminder = []
     }
+    if (this.data.overdue) {
+      let [year, month, date] = this.data.overdue.split('-')
+      let duration = new Date(year, month - 1, date).getTime() - Date.now()
+      let overdueClockID = setTimeout(
+        () => {
+          todoCopy.status = 'deleted'
+          TodoModel.update(['status'], todoCopy, () => {
+            this.setData({
+              todo: todoCopy
+            })
+            clearTimeout(overdueClockID)
+            timeOutArrCopy.overdue.shift(overdueClockID)
+            app.dataBetweenPage.editInfo = this.data.todo
+            app.dataBetweenPage.overdue = this.data.overdue
+          }, (error) => {
+            wx.showToast({
+              title: error,
+              icon: 'none'
+            })
+          })
+        }, duration)
+      timeOutArrCopy.overdue.push(overdueClockID)
+      if (timeOutArrCopy.overdue.length > 1) {
+        clearTimeout(timeOutArrCopy.overdue[0])
+        timeOutArrCopy.overdue.shift(timeOutArrCopy.overdue[0])
+      }
+    } else {
+      clearTimeout(timeOutArrCopy.overdue[0])
+      timeOutArrCopy.overdue = []
+    }
+    this.setData({
+      timeOutArr: timeOutArrCopy
+    })
   },
 })
