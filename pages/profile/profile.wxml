@@ -21,8 +21,12 @@
           <navigator class='option-navigator' url='../sublists/binlist'>已过期</navigator>
         </view>
       </view>
+      <view class='wrapper'>
+        <image class='option-image' src='imgs/clear.png'></image>
+        <text bindtap='clearStorage'>清理缓存</text>
+      </view>
       <view class='logout wrapper'>
-        <navigator class='.logoutBtn' bindtap='logout' url='../login/login'>退出登录</navigator>
+        <text class='.logoutBtn' bindtap='logout'>退出登录</text>
       </view>
     </view>
   </block>
