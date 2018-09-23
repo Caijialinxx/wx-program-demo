@@ -66,9 +66,7 @@
   display: flex;
   align-items: center;
   margin: 5px 0;
-  padding: 15px 20px;
-  border-top: 1rpx solid #eaeaea;
-  border-bottom: 1rpx solid #eaeaea;
+  padding: 0px 20px;
   background-color: #fff;
   box-sizing: border-box;
 }
@@ -89,12 +87,14 @@
   height: 20px;
   margin-right: 12px;
 }
-.option-navigator {
+.option-text {
   flex: 1;
   padding: 15px 0;
+}
+.sub-border {
   border-bottom: 1rpx solid #eaeaea;
 }
-.sub-wrapper:last-child .option-navigator {
+.sub-wrapper:last-child .sub-border {
   border-bottom: none;
 }
 
@@ -102,4 +102,9 @@
   color: red;
   margin: 20px 0;
   justify-content: center;
+}
+.logoutBtn {
+  padding: 15px;
+  flex: 1;
+  text-align: center;
 }

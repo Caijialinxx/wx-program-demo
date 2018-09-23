@@ -9,21 +9,21 @@
     <view class='options-container'>
       <view class='wrapper'>
         <image class='option-image' src='imgs/profile.png'></image>
-        <navigator url='./edit/profile-edit'>个人信息</navigator>
+        <navigator hover-class='none' class='option-text' url='./edit/profile-edit'>个人信息</navigator>
       </view>
       <view class='mutiple wrapper'>
         <view class='sub-wrapper'>
           <image class='option-image' src='imgs/done.png'></image>
-          <navigator class='option-navigator' url='../sublists/donelist'>已完成</navigator>
+          <navigator hover-class='none' class='option-text sub-border' url='../sublists/donelist'>已完成</navigator>
         </view>
         <view class='sub-wrapper'>
           <image class='option-image' src='imgs/bin.png'></image>
-          <navigator class='option-navigator' url='../sublists/binlist'>已过期</navigator>
+          <navigator hover-class='none' class='option-text sub-border' url='../sublists/binlist'>已过期</navigator>
         </view>
       </view>
       <view class='wrapper'>
         <image class='option-image' src='imgs/clear.png'></image>
-        <text bindtap='clearStorage'>清理缓存</text>
+        <text hover-class='none' class='option-text' bindtap='clearStorage'>清理缓存</text>
       </view>
       <view class='logout wrapper'>
         <text class='.logoutBtn' bindtap='logout'>退出登录</text>
