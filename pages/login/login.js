@@ -21,6 +21,10 @@ Page({
         app.globalData.userInfo.weAppLinked = true
         UserModel.update(['username', 'avatarUrl', 'weAppName', 'weAppLinked'], user)
       }
+      wx.setStorage({
+        key: 'login',
+        data: user,
+      })
       wx.navigateBack({
         delta: 1
       })
@@ -71,6 +75,10 @@ Page({
         app.globalData.userInfo = user
         wx.navigateBack({
           delta: 1
+        })
+        wx.setStorage({
+          key: 'login',
+          data: user,
         })
       }, (error) => {
         wx.showToast({
