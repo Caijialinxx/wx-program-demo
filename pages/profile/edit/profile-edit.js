@@ -4,6 +4,7 @@ const app = getApp()
 Page({
   data: {
     userInfo: null,
+    linkEmailNeeded: false,
   },
   onLoad: function () {
     this.setData({
@@ -127,18 +128,18 @@ Page({
   },
   linkWeChat: function ({ detail }) {
     if (detail.errMsg === 'getUserInfo:ok') {
-      linkWeChat().then(() => {
+      linkWeChat(() => {
         app.globalData.userInfo.weAppName = detail.userInfo.nickName
         app.globalData.userInfo.weAppLinked = true
         UserModel.update(['weAppName', 'weAppLinked'], app.globalData.userInfo, () => {
           this.setData({
             userInfo: app.globalData.userInfo,
           })
-        }, (error) => {
-          wx.showToast({
-            title: error,
-            icon: 'none'
-          })
+        })
+      }, (error) => {
+        wx.showToast({
+          title: error,
+          icon: 'none'
         })
       })
     }

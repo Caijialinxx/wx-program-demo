@@ -97,6 +97,13 @@
 .sub-wrapper:last-child .sub-border {
   border-bottom: none;
 }
+.storage {
+  justify-content: space-between;
+}
+.detail-text {
+  font-size: 90%;
+  color: #888;
+}
 
 .logout {
   color: red;

@@ -7,23 +7,24 @@
       </view>
     </view>
     <view class='options-container'>
-      <view class='wrapper'>
+      <navigator hover-class='none' url='./edit/profile-edit' class='wrapper'>
         <image class='option-image' src='imgs/profile.png'></image>
-        <navigator hover-class='none' class='option-text' url='./edit/profile-edit'>个人信息</navigator>
-      </view>
+        <text class='option-text'>个人信息</text>
+      </navigator>
       <view class='mutiple wrapper'>
-        <view class='sub-wrapper'>
+        <navigator hover-class='none' url='../sublists/donelist' class='sub-wrapper'>
           <image class='option-image' src='imgs/done.png'></image>
-          <navigator hover-class='none' class='option-text sub-border' url='../sublists/donelist'>已完成</navigator>
-        </view>
-        <view class='sub-wrapper'>
+          <text class='option-text sub-border'>已完成</text>
+        </navigator>
+        <navigator hover-class='none' url='../sublists/binlist' class='sub-wrapper'>
           <image class='option-image' src='imgs/bin.png'></image>
-          <navigator hover-class='none' class='option-text sub-border' url='../sublists/binlist'>已过期</navigator>
-        </view>
+          <text class='option-text sub-border'>已过期</text>
+        </navigator>
       </view>
-      <view class='wrapper'>
+      <view hover-class='none' bindtap='clearStorage' class='wrapper storage'>
         <image class='option-image' src='imgs/clear.png'></image>
-        <text hover-class='none' class='option-text' bindtap='clearStorage'>清理缓存</text>
+        <text class='option-text'>清理缓存</text>
+        <text class='detail-text'>{{storageSize}} KB</text>
       </view>
       <view class='logout wrapper'>
         <text class='.logoutBtn' bindtap='logout'>退出登录</text>

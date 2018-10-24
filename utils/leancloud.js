@@ -178,9 +178,23 @@ function logOut() {
   return null
 }
 
-function linkWeChat() {
+function linkWeChat(successFn, errorFn) {
   let user = AV.User.current()
-  return user.linkWithWeapp().catch(console.error)
+  return user.linkWithWeapp().then(() => {
+    successFn.call(undefined)
+  }, (error) => {
+    switch (error.code) {
+      case -1:
+        errorFn.call(undefined, `请求被终止，请检查网络是否正确连接！`)
+        return;
+      case 137:
+        errorFn.call(undefined, `该微信号已被其它账号关联或注册！`)
+        return;
+      default:
+        errorFn.call(undefined, `错误消息：${error.message}`)
+        return;
+    }
+  })
 }
 
 const UserModel = {
