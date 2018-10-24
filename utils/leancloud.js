@@ -31,10 +31,7 @@ const TodoModel = {
       let items = todos.map((todo) => {
         return {
           id: todo.id,
-          order: todo.attributes.order,
-          content: todo.attributes.content,
-          remark: todo.attributes.remark,
-          status: todo.attributes.status
+          ...todo.attributes
         }
       })
       successFn.call(undefined, items)

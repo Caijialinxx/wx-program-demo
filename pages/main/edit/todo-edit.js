@@ -4,8 +4,6 @@ const app = getApp()
 Page({
   data: {
     todo: null,
-    reminder: null,
-    overdue: '',
     timeOutArr: {
       reminder: [],
       overdue: []
@@ -14,8 +12,6 @@ Page({
   onLoad: function () {
     this.setData({
       todo: app.dataBetweenPage.editInfo,
-      reminder: app.dataBetweenPage.reminder,
-      overdue: app.dataBetweenPage.overdue
     })
   },
   playAudio: function (successFn, errorFn) {
@@ -29,82 +25,70 @@ Page({
       errorFn.call(undefined, res.errMsg)
     })
   },
-  setReminder: function () {
-    if (this.data.reminder) {
-      this.setData({
-        reminder: null
-      })
-    } else {
-      let date = new Date().toISOString().substr(0, 10),
-        time = new Date(Date.now() + 10800000).toTimeString().substr(0, 5)
-      this.setData({
-        reminder: {
-          date: date,
-          time: time
-        }
-      })
-    }
-  },
-  setOverdue: function () {
-    if (this.data.overdue) {
-      this.setData({
-        overdue: ''
-      })
-    } else {
-      let date = new Date().toISOString().substr(0, 10)
-      this.setData({
-        overdue: date
-      })
-    }
-  },
-  changeData: function(e) {
-    if (e.type === 'change') {
-      let reminderCopy = JSON.parse(JSON.stringify(this.data.reminder))
-      if (e.currentTarget.dataset.target === 'reminder-date') {
-        reminderCopy.date = e.detail.value
-        this.setData({
-          reminder: reminderCopy
-        })
-      } else if (e.currentTarget.dataset.target === 'reminder-time') {
-        reminderCopy.time = e.detail.value
-        this.setData({
-          reminder: reminderCopy
-        })
+  changeData: function (e) {
+    let todoCopy = JSON.parse(JSON.stringify(this.data.todo))
+    if (e.currentTarget.id === 'setReminder') {
+      if (todoCopy.reminder) {
+        todoCopy.reminder = null
       } else {
-        this.setData({
-          overdue: e.detail.value
-        })
+        let clock = new Date(Date.now() + 10800000) // 当天三小时后提醒
+        todoCopy.reminder = {
+          value: clock.valueOf(),
+          date: clock.toLocaleDateString().replace(/\//g, '-'),
+          time: clock.toTimeString().substr(0, 5)
+        }
+      }
+    } else if (e.currentTarget.id === 'setOverdue') {
+      if (todoCopy.overdue) {
+        todoCopy.overdue = null
+      } else {
+        let now = new Date()
+        let clock = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) // 一天后过期
+        todoCopy.overdue = {
+          value: clock.valueOf(),
+          date: clock.toLocaleDateString().replace(/\//g, '-')
+        }
+      }
+    } else if (e.currentTarget.id === 'reminder-date') {
+      todoCopy.reminder.date = e.detail.value
+      todoCopy.reminder.value = new Date(`${todoCopy.reminder.date}T${todoCopy.reminder.time}`).valueOf()
+    } else if (e.currentTarget.id === 'reminder-time') {
+      todoCopy.reminder.time = e.detail.value
+      todoCopy.reminder.value = new Date(`${todoCopy.reminder.date}T${todoCopy.reminder.time}`).valueOf()
+    } else if (e.currentTarget.id === 'overdue') {
+      todoCopy.overdue.date = e.detail.value
+      todoCopy.overdue.value = new Date(todoCopy.overdue.date).valueOf()
+    } else if (e.currentTarget.id === 'status') {
+      if (todoCopy.status === 'undone') {
+        todoCopy.status = 'success'
+      } else if (todoCopy.status === 'success') {
+        todoCopy.status = 'undone'
       }
     } else {
-      let todoCopy = JSON.parse(JSON.stringify(this.data.todo))
-      if (e.currentTarget.dataset.target === 'status') {
-        if (todoCopy.status === 'undone') {
-          todoCopy.status = 'success'
-        } else if (todoCopy.status === 'success') {
-          todoCopy.status = 'undone'
-        }
-      } else {
-        todoCopy[e.currentTarget.dataset.target] = e.detail.value
-      }
-      this.setData({
-        todo: todoCopy
-      })
+      // content remark
+      todoCopy[e.currentTarget.id] = e.detail.value
     }
+    this.setData({
+      todo: todoCopy
+    })
   },
-  save: function() {
+  save: function () {
     let todoCopy = JSON.parse(JSON.stringify(this.data.todo))
     if (todoCopy.content.trim() === '') {
       todoCopy.content = app.dataBetweenPage.editInfo.content
     }
-    let keys = ['content', 'status', 'remark']
+    let keys = ['content', 'status', 'remark', 'reminder', 'overdue']
     TodoModel.update(keys, todoCopy, () => {
       this.setData({
         todo: todoCopy
       })
-      app.dataBetweenPage.editInfo = this.data.todo
-      app.dataBetweenPage.reminder = this.data.reminder
+      app.dataBetweenPage.editInfo = todoCopy
+      this.setClock()
       wx.showToast({
         title: '保存成功',
+        complete: () => {
+          setTimeout(wx.navigateBack, 300)
+        }
       })
     }, (error) => {
       wx.showToast({
@@ -112,34 +96,35 @@ Page({
         icon: 'none'
       })
     })
-    let timeOutArrCopy = JSON.parse(JSON.stringify(this.data.timeOutArr))
-    if (this.data.reminder) {
-      let [year, month, date] = this.data.reminder.date.split('-'), [hour, minute] = this.data.reminder.time.split(':')
-      let duration = new Date(year, month - 1, date, hour, minute).getTime() - Date.now()
-      let reminderClockID = setTimeout(
-        this.playAudio.bind(undefined, () => {
-          wx.showModal({
-            title: '勾勾TODO',
-            content: todoCopy.content,
-            showCancel: false,
-            confirmText: '知道了',
-            success: ({ confirm }) => {
-              if (confirm) {
-                clearTimeout(reminderClockID)
-                timeOutArrCopy.reminder.shift(reminderClockID)
-                this.setData({
-                  timeOutArr: timeOutArrCopy
-                })
-              }
-            }
-          })
-        }, (error) => {
-          wx.showToast({
-            title: error,
-            icon: 'none'
-          })
-        }), duration)
+  },
+  setClock: function () {
+    let timeOutArrCopy = JSON.parse(JSON.stringify(this.data.timeOutArr)),
+      todoCopy = this.data.todo,
+      { reminder, overdue } = this.data.todo
+    if (reminder) {
+      let duration = reminder.value - Date.now()
+      console.log(reminder.value, Date.now(), duration)
+      let reminderClockID = setTimeout(this.playAudio.bind(undefined, () => {
+        wx.showModal({
+          title: '勾勾TODO',
+          content: todoCopy.content,
+          showCancel: false,
+          confirmText: '知道了'
+        })
+        clearTimeout(reminderClockID)
+        timeOutArrCopy.reminder = []
+        this.setData({
+          timeOutArr: timeOutArrCopy
+        })
+      }, (error) => {
+        wx.showToast({
+          title: error,
+          icon: 'none'
+        })
+      }), duration)
+
       timeOutArrCopy.reminder.push(reminderClockID)
+      // 清除多余设置的闹钟
       if (timeOutArrCopy.reminder.length > 1) {
         clearTimeout(timeOutArrCopy.reminder[0])
         timeOutArrCopy.reminder.shift(timeOutArrCopy.reminder[0])
@@ -148,31 +133,30 @@ Page({
       clearTimeout(timeOutArrCopy.reminder[0])
       timeOutArrCopy.reminder = []
     }
-    if (this.data.overdue) {
-      let [year, month, date] = this.data.overdue.split('-')
-      let duration = new Date(year, month - 1, date).getTime() - Date.now()
-      let overdueClockID = setTimeout(
-        () => {
-          todoCopy.status = 'deleted'
-          TodoModel.update(['status'], todoCopy, () => {
-            this.setData({
-              todo: todoCopy
-            })
-            clearTimeout(overdueClockID)
-            timeOutArrCopy.overdue.shift(overdueClockID)
-            app.dataBetweenPage.editInfo = this.data.todo
-            app.dataBetweenPage.overdue = this.data.overdue
-          }, (error) => {
-            wx.showToast({
-              title: error,
-              icon: 'none'
-            })
+    if (overdue) {
+      let duration = overdue.value - Date.now()
+      let overdueClockID = setTimeout(() => {
+        todoCopy.status = 'deleted'
+        TodoModel.update(['status'], todoCopy, () => {
+          clearTimeout(overdueClockID)
+          timeOutArrCopy.overdue = []
+          this.setData({
+            todo: todoCopy,
+            timeOutArr: timeOutArrCopy
           })
-        }, duration)
+          app.dataBetweenPage.editInfo = this.data.todo
+        }, (error) => {
+          wx.showToast({
+            title: error,
+            icon: 'none'
+          })
+        })
+      }, duration)
+
       timeOutArrCopy.overdue.push(overdueClockID)
       if (timeOutArrCopy.overdue.length > 1) {
         clearTimeout(timeOutArrCopy.overdue[0])
-        timeOutArrCopy.overdue.shift(timeOutArrCopy.overdue[0])
+        timeOutArrCopy.overdue = []
       }
     } else {
       clearTimeout(timeOutArrCopy.overdue[0])
@@ -181,5 +165,5 @@ Page({
     this.setData({
       timeOutArr: timeOutArrCopy
     })
-  },
+  }
 })
