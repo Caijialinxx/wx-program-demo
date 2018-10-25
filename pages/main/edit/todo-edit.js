@@ -136,20 +136,9 @@ Page({
     if (overdue) {
       let duration = overdue.value - Date.now()
       let overdueClockID = setTimeout(() => {
-        todoCopy.status = 'deleted'
-        TodoModel.update(['status'], todoCopy, () => {
-          clearTimeout(overdueClockID)
-          timeOutArrCopy.overdue = []
-          this.setData({
-            todo: todoCopy,
-            timeOutArr: timeOutArrCopy
-          })
-          app.dataBetweenPage.editInfo = this.data.todo
-        }, (error) => {
-          wx.showToast({
-            title: error,
-            icon: 'none'
-          })
+        timeOutArrCopy.overdue = []
+        this.setData({
+          timeOutArr: timeOutArrCopy
         })
       }, duration)
 

@@ -24,7 +24,9 @@ Page({
         content: this.data.todoDraft,
         status: 'undone',
         remark: '',
-        order: todosCopy.length
+        order: todosCopy.length,
+        reminder: null,
+        overdue: null
       }
     TodoModel.create(newTodo,
       (id) => {
@@ -46,7 +48,9 @@ Page({
     if (app.globalData.userInfo) {
       TodoModel.fetch(items => {
         this.setData({
-          todos: items.filter(item => item.status !== 'deleted')
+          todos: items.filter(item => {
+            return Boolean(item.overdue) === false || item.overdue.value > Date.now()
+          })
         })
       }, (error) => {
         wx.showToast({
