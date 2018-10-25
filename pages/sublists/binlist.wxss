@@ -26,25 +26,41 @@
   box-sizing: border-box;
   background-color: #fff;
 }
+.item-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1rpx solid #eaeaea;
+}
+.item-wrapper:last-child {
+  border-bottom: none;
+}
+.add-image {
+  width: 1em;
+  height: 1em;
+  margin-right: 12px;
+}
 .item {
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 14px 0;
-  border-bottom: 1rpx solid #eaeaea;
-}
-.item:last-child {
-  border-bottom: none;
 }
 
-.option-container {
+.options-container {
   width: 100%;
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
-  background-color: #fff;
-  color: red;
   margin-top: 12px;
-  padding: 12px 0;
   text-align: center;
+}
+.btn {
+  padding: 12px 0;
+  background-color: #fff;
+  margin-bottom: 12px;
+}
+.deleteAll {
+  color: red;
 }
 
 .null-container {
