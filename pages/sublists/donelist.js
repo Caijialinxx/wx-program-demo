@@ -5,10 +5,10 @@ Page({
   data: {
     todos: null,
   },
-  onLoad: function(options) {
+  onLoad: function (options) {
     this.showTodos()
   },
-  showTodos: function() {
+  showTodos: function () {
     TodoModel.fetch(items => {
       let doneTodos = items.filter(item => item.status === 'success')
       if (doneTodos.length > 0) {
@@ -23,7 +23,32 @@ Page({
       })
     })
   },
-  deleteAll: function() {
+  undoneAll: function () {
+    let todosCopy = JSON.parse(JSON.stringify(this.data.todos))
+    wx.showModal({
+      title: '标记所有未完成',
+      content: `确定要标记所有为未完成状态吗？`,
+      success: ({ confirm }) => {
+        if (confirm) {
+          todosCopy.map(todo => {
+            todo.status = 'undone'
+          })
+          TodoModel.updateAll(['status'], todosCopy, () => {
+            this.setData({
+              todos: null
+            })
+            setTimeout(wx.navigateBack, 300)
+          }, (error) => {
+            wx.showToast({
+              title: error,
+              icon: 'none'
+            })
+          })
+        }
+      }
+    })
+  },
+  deleteAll: function () {
     let todosCopy = JSON.parse(JSON.stringify(this.data.todos))
     wx.showModal({
       title: '删除待办事项',
@@ -34,6 +59,7 @@ Page({
             this.setData({
               todos: null
             })
+            setTimeout(wx.navigateBack, 300)
           }, (error) => {
             wx.showToast({
               title: error,

@@ -50,10 +50,10 @@ const TodoModel = {
       errorFn.call(undefined, error)
     })
   },
-  reorderAll(items, successFn, errorFn) {
+  updateAll(types, items, successFn, errorFn) {
     let todos = items.map(item => {
       let todo = AV.Object.createWithoutData('Todo', item.id)
-      todo.set('order', item.order)
+      types.map(key => todo.set(key, item[key]))
       return todo
     })
     AV.Object.saveAll(todos).then(() => {

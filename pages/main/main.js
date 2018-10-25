@@ -58,7 +58,7 @@ Page({
       this.setData({ todos: [] })
     }
   },
-  updateTodo: function(e) {
+  updateTodo: function (e) {
     let todosCopy = JSON.parse(JSON.stringify(this.data.todos))
     let target = todosCopy.filter(item => item.id === e.currentTarget.dataset.id)[0]
     if (e.target.dataset.editable) {
@@ -98,7 +98,8 @@ Page({
             deletedTodosCopy.push(target)
             todosCopy = todosCopy.filter(item => item.id !== undefined)
             todosCopy.map((item, index) => { item.order = index })
-            TodoModel.reorderAll(todosCopy, () => {
+            // 删除之后重新排序
+            TodoModel.updateAll(['order'], todosCopy, () => {
               this.setData({
                 todos: todosCopy,
                 deletedTodos: deletedTodosCopy

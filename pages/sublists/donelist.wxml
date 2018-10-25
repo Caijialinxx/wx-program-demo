@@ -9,8 +9,13 @@
         <text class='item'>{{item.content}}</text>
       </block>
     </view>
-    <view bindtap='deleteAll' class='option-container'>
-      <text>清空已完成</text>
+    <view class='options-container'>
+      <view bindtap='undoneAll' class='btn'>
+        <text>标记所有未完成</text>
+      </view>
+      <view bindtap='deleteAll' class='btn deleteAll'>
+        <text>清空已完成</text>
+      </view>
     </view>
   </block>
   <block wx:else>
