@@ -5,9 +5,14 @@
   </view>
   <block wx:if='{{todos}}'>
     <view class='list-container'>
-      <block wx:for="{{todos}}" wx:key="id">
-        <text class='item'>{{item.content}}</text>
-      </block>
+      <view wx:for="{{todos}}" wx:key="id" id='{{item.id}}' bindtap='updateTodo' bindlongpress='deleteTodo' class='item-wrapper'>
+        <view class='icon-container'>
+          <icon class='icon {{item.status}}' type='{{item.status}}' size='22' data-actiontype='changeStatus'></icon>
+        </view>
+        <view class='text-container'>
+          <navigator class='edit-navigator' data-actiontype='edit' url='../main/edit/todo-edit'>{{item.content}}</navigator>
+        </view>
+      </view>
     </view>
     <view class='options-container'>
       <view bindtap='undoneAll' class='btn'>

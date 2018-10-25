@@ -26,15 +26,40 @@
   box-sizing: border-box;
   background-color: #fff;
 }
-.item {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.item-wrapper {
+  display: flex;
+  align-items: center;
   padding: 14px 0;
   border-bottom: 1rpx solid #eaeaea;
 }
-.item:last-child {
+.item-wrapper:last-child {
   border-bottom: none;
+}
+.icon-container {
+  width: 22px;
+  height: 22px;
+  padding-right: 16px;
+}
+.icon {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-sizing: border-box;
+  transition: all 0.3s;
+}
+.undone {
+  border: 2px solid #888;
+}
+.success {
+  color: #fff;
+}
+.text-container {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.edit-navigator {
+  display: inline;
 }
 
 .options-container {
