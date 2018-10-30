@@ -12,15 +12,8 @@ Page({
     }
   },
   loginWithWeChat: function ({ detail: { userInfo } }) {
-    UserModel.loginWithWeChat((user) => {
+    UserModel.loginWithWeChat(userInfo, (user) => {
       app.globalData.userInfo = user
-      if (!user.weAppLinked) {
-        app.globalData.userInfo.username = userInfo.nickName
-        app.globalData.userInfo.avatarUrl = userInfo.avatarUrl
-        app.globalData.userInfo.weAppName = userInfo.nickName
-        app.globalData.userInfo.weAppLinked = true
-        UserModel.update(['username', 'avatarUrl', 'weAppName', 'weAppLinked'], user)
-      }
       wx.setStorage({
         key: 'login',
         data: user,

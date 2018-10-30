@@ -9,8 +9,10 @@ Page({
   },
   onLoad: function () {
     let userInfo = app.globalData.userInfo,
-      email = userInfo.email
-    email = email.replace(email.substring(2, email.indexOf('@')), '***')
+      email = userInfo.email || ''
+    if (email) {
+      email = email.replace(email.substring(2, email.indexOf('@')), '***')
+    }
     this.setData({
       userInfo: userInfo,
       email: email
@@ -69,28 +71,37 @@ Page({
     })
   },
   unbindWeApp: function () {
-    wx.showModal({
-      title: '解绑微信',
-      content: '确定要解绑微信吗？这将使你无法使用微信登录。',
-      success: ({ confirm }) => {
-        if (confirm) {
-          let userCopy = JSON.parse(JSON.stringify(this.data.userInfo))
-          userCopy.weAppLinked = false
-          userCopy.weAppName = ''
-          UserModel.update(['authData', 'weAppLinked', 'weAppName'], {
-            ...userCopy,
-            authData: null
-          }, () => {
-            this.setData({
-              userInfo: userCopy
+    if (this.data.userInfo.emailVerified) {
+      wx.showModal({
+        title: '解绑微信',
+        content: '确定要解绑微信吗？这将使你无法使用微信登录。',
+        success: ({ confirm }) => {
+          if (confirm) {
+            let userCopy = JSON.parse(JSON.stringify(this.data.userInfo))
+            userCopy.weAppLinked = false
+            userCopy.weAppName = ''
+            UserModel.update(['authData', 'weAppLinked', 'weAppName'], {
+              ...userCopy,
+              authData: null
+            }, () => {
+              this.setData({
+                userInfo: userCopy
+              })
+              app.globalData.userInfo = userCopy
+            }, (error) => {
+              console.log(error)
             })
-            app.globalData.userInfo = userCopy
-          }, (error) => {
-            console.log(error)
-          })
+          }
         }
-      }
-    })
+      })
+    } else {
+      wx.showModal({
+        title: '不可解绑微信',
+        content: '您当前无法解绑微信。请先关联邮箱并通过验证！',
+        showCancel: false,
+        confirmText: '知道了'
+      })
+    }
   },
   showEmailSettingWindow: function () {
     this.setData({ linkEmailNeeded: true })
@@ -139,7 +150,6 @@ Page({
           linkEmailNeeded: false,
           transformValue: 'translateX(0%)'
         })
-        console.log(this.data)
         wx.showModal({
           title: '验证邮件已发送',
           content: `验证邮件已发送至您的邮箱【${email}】，请转至邮箱通过验证即可邮箱和密码登录使用。`,

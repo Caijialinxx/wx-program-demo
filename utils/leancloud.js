@@ -209,9 +209,15 @@ const UserModel = {
       errorFn.call(undefined, error)
     })
   },
-  loginWithWeChat(successFn, errorFn) {
-    AV.User.loginWithWeapp().then(user => {
-      successFn.call(undefined, getUserInfo(user))
+  loginWithWeChat(weChatUserInfo, successFn, errorFn) {
+    return AV.User.loginWithWeapp().then(user => {
+      user.set('weAppLinked', true)
+      user.set('weAppName', weChatUserInfo.nickName)
+      user.save().then((user) => {
+        successFn.call(undefined, getUserInfo(user))
+      }, (error) => {
+        errorFn.call(undefined, error.message)
+      })
     }, error => {
       errorFn.call(undefined, error)
     })
