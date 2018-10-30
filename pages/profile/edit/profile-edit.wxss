@@ -46,6 +46,15 @@
 .input {
   text-align: right;
 }
+.info-wrapper {
+  display: flex;
+  align-items: center;
+}
+.arrow-btn {
+  width: 0.8em;
+  height: 0.8em;
+  margin-left: 6px;
+}
 button[plain] {
   line-height: 1em;
   font-size: 1em;

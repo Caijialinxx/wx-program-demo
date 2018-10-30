@@ -5,10 +5,15 @@ Page({
   data: {
     userInfo: null,
     linkEmailNeeded: false,
+    email: undefined,
   },
   onLoad: function () {
+    let userInfo = app.globalData.userInfo,
+      email = userInfo.email
+    email = email.replace(email.substring(2, email.indexOf('@')), '***')
     this.setData({
-      userInfo: app.globalData.userInfo,
+      userInfo: userInfo,
+      email: email
     })
   },
   changeAvatar: function () {
@@ -63,6 +68,30 @@ Page({
       })
     })
   },
+  unbindWeApp: function () {
+    wx.showModal({
+      title: '解绑微信',
+      content: '确定要解绑微信吗？这将使你无法使用微信登录。',
+      success: ({ confirm }) => {
+        if (confirm) {
+          let userCopy = JSON.parse(JSON.stringify(this.data.userInfo))
+          userCopy.weAppLinked = false
+          userCopy.weAppName = ''
+          UserModel.update(['authData', 'weAppLinked', 'weAppName'], {
+            ...userCopy,
+            authData: null
+          }, () => {
+            this.setData({
+              userInfo: userCopy
+            })
+            app.globalData.userInfo = userCopy
+          }, (error) => {
+            console.log(error)
+          })
+        }
+      }
+    })
+  },
   showEmailSettingWindow: function () {
     this.setData({ linkEmailNeeded: true })
   },
@@ -103,8 +132,7 @@ Page({
       })
     } else {
       let user = AV.User.current()
-      user.setEmail(email).setPassword(password).save().then((user) => {
-        console.log(user)
+      user.setEmail(email).setPassword(password).save().then(() => {
         app.globalData.userInfo.email = email
         this.setData({
           userInfo: app.globalData.userInfo,

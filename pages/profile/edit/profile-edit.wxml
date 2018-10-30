@@ -15,24 +15,18 @@
     </view>
     <view class='sub-wrapper'>
       <text>邮箱</text>
-      <block wx:if='{{userInfo.emailVerified && userInfo.email}}'>
-        <text>{{userInfo.email}}</text>
-      </block>
-      <block wx:if='{{!userInfo.emailVerified && userInfo.email}}'>
-        <text>待验证</text>
-      </block>
-      <block wx:else>
-        <button bindtap='showEmailSettingWindow' plain='true'>去关联</button>
-      </block>
+      <view wx:if='{{userInfo.emailVerified}}' class='info-wrapper'>
+        <text>{{email}}</text>
+      </view>
+      <button wx:else bindtap='showEmailSettingWindow' plain='true'>去关联</button>
     </view>
     <view class='sub-wrapper'>
       <text>微信</text>
-      <block wx:if='{{userInfo.weAppLinked}}'>
-        <text>{{userInfo.weAppName}}</text>
-      </block>
-      <block wx:else>
-        <button bindgetuserinfo='linkWeChat' open-type='getUserInfo' plain='true'>去关联</button>
-      </block>
+      <view wx:if='{{userInfo.weAppLinked}}' bindtap='unbindWeApp' class='info-wrapper'>
+        <text>已关联</text>
+        <image class='arrow-btn' src='./imgs/arrow.png'></image>
+      </view>
+      <button wx:else bindgetuserinfo='linkWeChat' open-type='getUserInfo' plain='true'>去关联</button>
     </view>
   </view>
   <view wx:if='{{linkEmailNeeded}}' class='float-window'>
@@ -51,7 +45,7 @@
         </view>
         <view class='passwordInput-container'>
           <view class='input-container'>
-            <text class='statement'>请设置密码，设置成功后您可以使用邮箱和密码登录。</text>
+            <text class='statement'>请设置密码，设置成功后您可以使用邮箱和密码登录网页版。</text>
             <input name='password' placeholder='password' confirm-type='done' class='emailBindInput'></input>
           </view>
           <view class='btns-container'>
