@@ -3,13 +3,31 @@ import { logIn, reset, UserModel } from '../../utils/leancloud.js'
 
 Page({
   data: {
-    email: '',
-    password: ''
+    focusSettings: {
+      email: true,
+      password: false
+    },
+    values: {
+      email: '',
+      password: ''
+    }
   },
   onShow: function () {
     if (app.globalData.userInfo) {
       this.setData({ email: app.globalData.userInfo.email })
     }
+  },
+  toNext: function ({ currentTarget: { dataset: { nextinput } } }) {
+    let focusSettingsCopy = JSON.parse(JSON.stringify(this.data.focusSettings))
+    for (let key in focusSettingsCopy) {
+      focusSettingsCopy[key] = key === nextinput ? true : false
+    }
+    this.setData({ focusSettings: focusSettingsCopy })
+  },
+  toSubmit: function () {
+    let values = wx.createSelectorQuery().select('form')._selectorQuery._defaultComponent.data.values
+    let data = { detail: { value: values } }
+    this.verifyInfo(data)
   },
   loginWithWeChat: function ({ detail: { userInfo } }) {
     UserModel.loginWithWeChat(userInfo, (user) => {
@@ -28,17 +46,10 @@ Page({
       })
     })
   },
-  changeData: function (e) {
-    switch (e.currentTarget.dataset.target) {
-      case 'email':
-        this.setData({ email: e.detail.value })
-        break
-      case 'password':
-        this.setData({ password: e.detail.value })
-        break
-      default:
-        return
-    }
+  changeData: function ({ currentTarget: { id }, detail: { value } }) {
+    let valuesCopy = JSON.parse(JSON.stringify(this.data.values))
+    valuesCopy[id] = value
+    this.setData({ values: valuesCopy })
   },
   verifyInfo: function ({ detail: { value: { email, password } } }) {
     let index_at = email.indexOf('@'),

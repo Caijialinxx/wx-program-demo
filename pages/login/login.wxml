@@ -3,11 +3,11 @@
     <view class='self-container'>
       <view class='input-container'>
         <image class='inputImg' src='imgs/email.png'></image>
-        <input data-target='email' name='email' value='{{email}}' confirm-type='next' class='infoInput' bindinput='changeData' placeholder='you@example.com'></input>
+        <input id='email' data-nextinput='password' name='email' value='{{values.email}}' confirm-type='next' class='infoInput' bindinput='changeData' placeholder='you@example.com' focus='{{focusSettings.email}}' bindconfirm='toNext'></input>
       </view>
       <view class='input-container'>
         <image class='inputImg' src='imgs/pwd.png'></image>
-        <input data-target='password' name='password' value='{{password}}' confirm-type='done' class='infoInput' password bindinput='changeData' placeholder='password'></input>
+        <input id='password' name='password' value='{{values.password}}' confirm-type='done' class='infoInput' password bindinput='changeData' placeholder='password' focus='{{focusSettings.password}}' bindconfirm='toSubmit'></input>
       </view>
       <view class='options-container'>
         <navigator url='../signup/signup'>没有账号？去注册</navigator>

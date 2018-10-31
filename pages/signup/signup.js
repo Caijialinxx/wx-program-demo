@@ -3,28 +3,37 @@ const app = getApp()
 
 Page({
   data: {
-    email: '',
-    nickname: '',
-    password: '',
-    password_confirm: ''
-  },
-  changeData: function(e) {
-    switch (e.currentTarget.dataset.target) {
-      case 'email':
-        this.setData({ email: e.detail.value })
-        break
-      case 'nickname':
-        this.setData({ nickname: e.detail.value })
-        break
-      case 'password':
-        this.setData({ password: e.detail.value })
-        break
-      default:
-        this.setData({ password_confirm: e.detail.value })
-        break
+    focusSettings: {
+      email: true,
+      nickname: false,
+      password: false,
+      password_confirm: false
+    },
+    values: {
+      email: '',
+      nickname: '',
+      password: '',
+      password_confirm: ''
     }
   },
-  verifyInfo: function({
+  toNext: function ({ currentTarget: { dataset: { nextinput } } }) {
+    let focusSettingsCopy = JSON.parse(JSON.stringify(this.data.focusSettings))
+    for (let key in focusSettingsCopy) {
+      focusSettingsCopy[key] = key === nextinput ? true : false
+    }
+    this.setData({ focusSettings: focusSettingsCopy })
+  },
+  toSubmit: function () {
+    let values = wx.createSelectorQuery().select('form')._selectorQuery._defaultComponent.data.values
+    let data = { detail: { value: values } }
+    this.verifyInfo(data)
+  },
+  changeData: function ({ currentTarget: { id }, detail: { value } }) {
+    let valuesCopy = JSON.parse(JSON.stringify(this.data.values))
+    valuesCopy[id] = value
+    this.setData({ values: valuesCopy })
+  },
+  verifyInfo: function ({
     detail: { value: { email, nickname, password, password_confirm } }
   }) {
     let index_at = email.indexOf('@'),
