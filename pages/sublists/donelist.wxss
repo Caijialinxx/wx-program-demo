@@ -1,5 +1,7 @@
 .sublist {
   background-color: #fafafa;
+  height: initial;
+  min-height: 100vh;
 }
 .header {
   background-color: #fff;
