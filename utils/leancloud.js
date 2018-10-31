@@ -209,6 +209,30 @@ const UserModel = {
       errorFn.call(undefined, error)
     })
   },
+  linkEmail(email, successFn, errorFn) {
+    let user = AV.User.current()
+    user.setEmail(email).save().then((user) => {
+      successFn.call(undefined, getUserInfo(user))
+    }, (error) => {
+      switch (error.code) {
+        case -1:
+          errorFn.call(undefined, `请求被终止，请检查网络是否正确连接！`)
+          return;
+        case 125:
+          errorFn.call(undefined, `电子邮箱地址无效，请检查！`)
+          return;
+        case 203:
+          errorFn.call(undefined, `电子邮箱地址已被占用，请更换！`)
+          return;
+        case 218:
+          errorFn.call(undefined, `密码无效（不允许含空格），请重设！`)
+          return;
+        default:
+          errorFn.call(undefined, `${error.message}`)
+          return;
+      }
+    })
+  },
   loginWithWeChat(weChatUserInfo, successFn, errorFn) {
     return AV.User.loginWithWeapp().then(user => {
       user.set('weAppLinked', true)

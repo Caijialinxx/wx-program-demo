@@ -5,17 +5,18 @@ Page({
   data: {
     userInfo: null,
     linkEmailNeeded: false,
-    email: undefined,
+    mosaicedEmail: undefined,
+    emailDraft: undefined
   },
   onLoad: function () {
     let userInfo = app.globalData.userInfo,
-      email = userInfo.email || ''
-    if (email) {
-      email = email.replace(email.substring(2, email.indexOf('@')), '***')
+      mosaicedEmail = userInfo.email || ''
+    if (mosaicedEmail) {
+      mosaicedEmail = mosaicedEmail.replace(mosaicedEmail.substring(2, mosaicedEmail.indexOf('@')), '***')
     }
     this.setData({
       userInfo: userInfo,
-      email: email
+      mosaicedEmail: mosaicedEmail
     })
   },
   changeAvatar: function () {
@@ -44,12 +45,18 @@ Page({
       }
     })
   },
-  changeData: function ({ detail: { value } }) {
-    let userCopy = JSON.parse(JSON.stringify(this.data.userInfo))
-    userCopy.username = value
-    if (userCopy.username) {
+  changeData: function ({ currentTarget: { id }, detail: { value } }) {
+    if (id === 'username') {
+      let userCopy = JSON.parse(JSON.stringify(this.data.userInfo))
+      userCopy.username = value
+      if (userCopy.username) {
+        this.setData({
+          userInfo: userCopy,
+        })
+      }
+    } else if (id === 'email') {
       this.setData({
-        userInfo: userCopy,
+        emailDraft: value
       })
     }
   },
@@ -109,14 +116,9 @@ Page({
   cancelLinkEmail: function () {
     this.setData({ linkEmailNeeded: false })
   },
-  nextSetPassword: function () {
-    this.setData({ transformValue: 'translateX(-50%)' })
-  },
-  previousSetEmail: function () {
-    this.setData({ transformValue: 'translateX(0%)' })
-  },
-  linkEmail: function ({ detail: { value: { email, password } } }) {
-    let index_at = email.indexOf('@'),
+  linkEmail: function () {
+    let email = this.data.emailDraft,
+      index_at = email.indexOf('@'),
       index_point = email.indexOf('.'),
       length_strAfterPoint = email.substr(index_point + 1).length
 
@@ -130,35 +132,25 @@ Page({
         title: '邮箱格式错误！',
         showCancel: false,
       })
-    } else if (password.indexOf(' ') > -1 || password === '') {
-      wx.showModal({
-        title: '密码不能为空或含有空格！',
-        showCancel: false,
-        success: () => {
-          this.setData({
-            password: '',
-            password_confirm: ''
-          })
-        }
-      })
     } else {
-      let user = AV.User.current()
-      user.setEmail(email).setPassword(password).save().then(() => {
-        app.globalData.userInfo.email = email
+      UserModel.linkEmail(email, () => {
+        let userInfoCopy = JSON.parse(JSON.stringify(this.data.userInfo))
+        userInfoCopy.emailDraft = email
         this.setData({
-          userInfo: app.globalData.userInfo,
+          userInfo: userInfoCopy,
           linkEmailNeeded: false,
-          transformValue: 'translateX(0%)'
+          emailDraft: ''
         })
+        app.globalData.userInfo = userInfoCopy
         wx.showModal({
           title: '验证邮件已发送',
-          content: `验证邮件已发送至您的邮箱【${email}】，请转至邮箱通过验证即可邮箱和密码登录使用。`,
+          content: `验证邮件已发送至您的邮箱【${email}】，转至邮箱通过验证后方可生效！设置密码请到主页的【设置】中。`,
           showCancel: false,
           confirmText: '知道了'
         })
       }, (error) => {
         wx.showToast({
-          title: error.code.toString(),
+          title: error,
           icon: 'none'
         })
       })

@@ -93,7 +93,7 @@ Page({
     }
   },
   resetPassword: function () {
-    let email = this.data.email
+    let email = this.data.values.email
     if (email) {
       wx.showModal({
         title: '重置密码',
