@@ -4,6 +4,7 @@ const app = getApp()
 Page({
   data: {
     todos: [],
+    maxOrder: undefined,
     todoDraft: '',
     deletedTodos: [],
   },
@@ -24,7 +25,7 @@ Page({
         content: this.data.todoDraft,
         status: 'undone',
         remark: '',
-        order: todosCopy.length,
+        order: this.data.maxOrder + 1,
         reminder: null,
         overdue: null
       }
@@ -34,6 +35,7 @@ Page({
         todosCopy.push(newTodo)
         this.setData({
           todoDraft: '',
+          maxOrder: newTodo.order,
           todos: todosCopy
         })
       },
@@ -89,7 +91,6 @@ Page({
   },
   deleteTodo: function ({ currentTarget: { dataset: { id } } }) {
     let todosCopy = JSON.parse(JSON.stringify(this.data.todos)),
-      deletedTodosCopy = JSON.parse(JSON.stringify(this.data.deletedTodos)),
       target = todosCopy.filter(item => item.id === id)[0]
     wx.showModal({
       title: '删除待办事项',
@@ -97,22 +98,9 @@ Page({
       success: ({ confirm }) => {
         if (confirm) {
           TodoModel.destroy(target.id, () => {
-            delete target.id
-            delete target.order
-            deletedTodosCopy.push(target)
-            todosCopy = todosCopy.filter(item => item.id !== undefined)
-            todosCopy.map((item, index) => { item.order = index })
-            // 删除之后重新排序
-            TodoModel.updateAll(['order'], todosCopy, () => {
-              this.setData({
-                todos: todosCopy,
-                deletedTodos: deletedTodosCopy
-              })
-            }, (error) => {
-              wx.showToast({
-                title: error,
-                icon: 'none'
-              })
+            todosCopy = todosCopy.filter(item => item.id !== target.id)
+            this.setData({
+              todos: todosCopy,
             })
           }, (error) => {
             wx.showToast({
