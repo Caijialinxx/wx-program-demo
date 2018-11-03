@@ -6,13 +6,25 @@ Page({
     todos: [],
     maxOrder: undefined,
     todoDraft: '',
-    deletedTodos: [],
   },
+  firstLoadDone: false,
   onLoad: function () {
-    this.showTodos()
+    TodoModel.fetch(items => {
+      app.globalData.todos = items
+      this.showTodos(items)
+    }, (error) => {
+      wx.showToast({
+        title: error,
+        icon: 'none'
+      })
+    })
   },
   onShow: function () {
-    this.showTodos()
+    if (this.firstLoadDone) {
+      this.showTodos(app.globalData.todos)
+    } else {
+      this.firstLoadDone = true
+    }
   },
   changeData: function ({ detail: { value } }) {
     this.setData({
@@ -33,11 +45,15 @@ Page({
       (id) => {
         newTodo.id = id
         todosCopy.push(newTodo)
+        app.globalData.todos.push(newTodo)
         this.setData({
           todoDraft: '',
           maxOrder: newTodo.order,
           todos: todosCopy
         })
+        setTimeout(() => {
+          wx.pageScrollTo({ scrollTop: 9999 })
+        }, 150)
       },
       (error) => {
         wx.showToast({
@@ -46,27 +62,43 @@ Page({
         })
       })
   },
-  showTodos: function () {
+  showTodos: function (rawData) {
     if (app.globalData.userInfo) {
-      TodoModel.fetch(items => {
+      if (arguments[1]) {
+        rawData.splice(arguments[1], 1)
         this.setData({
-          todos: items.filter(item => {
-            return Boolean(item.overdue) === false || item.overdue.value > Date.now()
+          todos: rawData
+        })
+      } else {
+        this.setData({ maxOrder: rawData[rawData.length - 1].order })
+        let shouldShow, { notShowSuccess, notShowOverdue } = app.globalData.options
+        if (notShowSuccess && notShowOverdue) {
+          shouldShow = rawData.filter(item => {
+            return item.status === 'undone' && (item.overdue === null || item.overdue.value > Date.now())
           })
+        } else if (!notShowSuccess && !notShowOverdue) {
+          shouldShow = rawData
+        } else if (notShowSuccess) {
+          // 不显示已完成但显示已过期
+          shouldShow = rawData.filter(item => item.status !== 'success')
+        } else {
+          // 不显示已过期但显示已完成
+          shouldShow = rawData.filter(item => (item.overdue === null || item.overdue.value > Date.now()))
+        }
+        this.setData({
+          todos: shouldShow
         })
-      }, (error) => {
-        wx.showToast({
-          title: error,
-          icon: 'none'
-        })
-      })
-    } else {
-      this.setData({ todos: [] })
+      }
     }
   },
   updateTodo: function (e) {
-    let todosCopy = JSON.parse(JSON.stringify(this.data.todos))
-    let target = todosCopy.filter(item => item.id === e.currentTarget.dataset.id)[0]
+    let todosCopy = JSON.parse(JSON.stringify(this.data.todos)), target
+    for (let i = 0; i < todosCopy.length; i++) {
+      if (todosCopy[i].id === e.currentTarget.id) {
+        target = todosCopy[i]
+        break
+      }
+    }
     if (e.target.dataset.editable) {
       // 编辑内容
       app.dataBetweenPage.editInfo = target
@@ -78,9 +110,16 @@ Page({
         target.status = 'undone'
       }
       TodoModel.update(['status'], target, () => {
+        for (let i = 0; i < app.globalData.todos.length; i++) {
+          if (app.globalData.todos[i].id === target.id) {
+            app.globalData.todos[i] = target
+            break
+          }
+        }
         this.setData({
           todos: todosCopy
         })
+        this.showTodos(todosCopy, target.index)
       }, (error) => {
         wx.showToast({
           title: error,
@@ -89,19 +128,33 @@ Page({
       })
     }
   },
-  deleteTodo: function ({ currentTarget: { dataset: { id } } }) {
-    let todosCopy = JSON.parse(JSON.stringify(this.data.todos)),
-      target = todosCopy.filter(item => item.id === id)[0]
+  deleteTodo: function ({ currentTarget: { id } }) {
+    let todosCopy = JSON.parse(JSON.stringify(this.data.todos)), target = {}
+    for (let i = 0; i < todosCopy.length; i++) {
+      if (todosCopy[i].id === id) {
+        target = {
+          data: todosCopy[i],
+          index: i
+        }
+        break
+      }
+    }
     wx.showModal({
       title: '删除待办事项',
-      content: `确定要删除【${target.content}】吗？`,
+      content: `【${target.data.content}】将被永久删除`,
       success: ({ confirm }) => {
         if (confirm) {
-          TodoModel.destroy(target.id, () => {
-            todosCopy = todosCopy.filter(item => item.id !== target.id)
+          TodoModel.destroy(target.data.id, () => {
+            for (let i = 0; i < app.globalData.todos.length; i++) {
+              if (app.globalData.todos[i].id === target.data.id) {
+                app.globalData.todos.splice(i, 1)
+                break
+              }
+            }
             this.setData({
               todos: todosCopy,
             })
+            this.showTodos(todosCopy, target.index)
           }, (error) => {
             wx.showToast({
               title: error,

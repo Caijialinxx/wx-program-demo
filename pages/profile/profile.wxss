@@ -1,7 +1,7 @@
 .profile {
   height: initial;
-  min-height: 100vh;
   background-color: #fafafa;
+  min-height: 100vh;
 }
 .initial-container {
   width: 100%;

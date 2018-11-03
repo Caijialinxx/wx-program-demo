@@ -83,6 +83,12 @@ Page({
         todo: todoCopy
       })
       app.dataBetweenPage.editInfo = todoCopy
+      for (let i = 0; i < app.globalData.todos.length; i++) {
+        if (app.globalData.todos[i].id === todoCopy.id) {
+          app.globalData.todos[i] = todoCopy
+          break
+        }
+      }
       this.setClock()
       wx.showToast({
         title: '保存成功',
@@ -103,7 +109,6 @@ Page({
       { reminder, overdue } = this.data.todo
     if (reminder) {
       let duration = reminder.value - Date.now()
-      console.log(reminder.value, Date.now(), duration)
       let reminderClockID = setTimeout(this.playAudio.bind(undefined, () => {
         wx.showModal({
           title: '勾勾TODO',

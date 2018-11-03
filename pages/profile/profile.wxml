@@ -21,6 +21,10 @@
           <text class='option-text sub-border'>已过期</text>
         </navigator>
       </view>
+      <navigator hover-class='none' url='../setting/setting' class='wrapper'>
+        <image class='option-image' src='imgs/setting.png'></image>
+        <text class='option-text'>设置</text>
+      </navigator>
       <view hover-class='none' bindtap='clearStorage' class='wrapper storage'>
         <image class='option-image' src='imgs/clear.png'></image>
         <text class='option-text'>清理缓存</text>

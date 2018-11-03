@@ -7,6 +7,11 @@ App({
   },
   dataBetweenPage: {},
   globalData: {
+    todos: null,
+    options: {
+      notShowSuccess: true,
+      notShowOverdue: true
+    },
     userInfo: null
   }
 })

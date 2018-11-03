@@ -6,36 +6,50 @@ Page({
     todos: null,
   },
   onShow: function () {
-    this.showTodos()
+    this.showTodos(app.globalData.todos)
   },
-  showTodos: function () {
-    TodoModel.fetch(items => {
-      let doneTodos = items.filter(item => item.status === 'success')
+  showTodos: function (rawData) {
+    if (arguments[1]) {
+      rawData.splice(arguments[1], 1)
+      this.setData({
+        todos: rawData
+      })
+    } else {
+      let doneTodos = rawData.filter(item => item.status === 'success')
       if (doneTodos.length > 0) {
         this.setData({
           todos: doneTodos,
         })
+      } else {
+        this.setData({
+          todos: null,
+        })
       }
-    }, (error) => {
-      wx.showToast({
-        title: error,
-        icon: 'none'
-      })
-    })
+    }
   },
   updateTodo: function (e) {
-    let todosCopy = JSON.parse(JSON.stringify(this.data.todos))
-    let target = todosCopy.filter(item => item.id === e.currentTarget.id)[0]
-    console.log(e.target.dataset.actiontype)
+    let todosCopy = JSON.parse(JSON.stringify(this.data.todos)), target
+    for (let i = 0; i < todosCopy.length; i++) {
+      if (todosCopy[i].id === e.currentTarget.id) {
+        target = todosCopy[i]
+        break
+      }
+    }
     if (e.target.dataset.actiontype === 'edit') {
       app.dataBetweenPage.editInfo = target
     } else if (e.target.dataset.actiontype === 'changeStatus') {
       target.status = target.status === 'undone' ? 'success' : 'undone'
       TodoModel.update(['status'], target, () => {
-        todosCopy = todosCopy.filter(item => item.id !== target.id)
+        for (let i = 0; i < app.globalData.todos.length; i++) {
+          if (app.globalData.todos[i].id === target.id) {
+            app.globalData.todos[i] = target
+            break
+          }
+        }
         this.setData({
           todos: todosCopy
         })
+        this.showTodos(todosCopy)
       }, (error) => {
         wx.showToast({
           title: error,
@@ -55,6 +69,11 @@ Page({
             todo.status = 'undone'
           })
           TodoModel.updateAll(['status'], todosCopy, () => {
+            for (let i = 0; i < app.globalData.todos.length; i++) {
+              if (app.globalData.todos[i].status === 'success') {
+                app.globalData.todos[i].status = 'undone'
+              }
+            }
             this.setData({
               todos: null
             })
@@ -70,18 +89,32 @@ Page({
     })
   },
   deleteTodo: function ({ currentTarget: { id } }) {
-    let todosCopy = JSON.parse(JSON.stringify(this.data.todos)),
-      target = todosCopy.filter(item => item.id === id)[0]
+    let todosCopy = JSON.parse(JSON.stringify(this.data.todos)), target = {}
+    for (let i = 0; i < todosCopy.length; i++) {
+      if (todosCopy[i].id === id) {
+        target = {
+          data: todosCopy[i],
+          index: i
+        }
+        break
+      }
+    }
     wx.showModal({
       title: '删除待办事项',
       content: `确定要删除【${target.content}】吗？`,
       success: ({ confirm }) => {
         if (confirm) {
           TodoModel.destroy(target.id, () => {
-            todosCopy = todosCopy.filter(item => item.id !== target.id)
+            for (let i = 0; i < app.globalData.todos.length; i++) {
+              if (app.globalData.todos[i].id === target.data.id) {
+                app.globalData.todos.splice(i, 1)
+                break
+              }
+            }
             this.setData({
-              todos: todosCopy
+              todos: todosCopy,
             })
+            this.showTodos(todosCopy, target.index)
           }, (error) => {
             wx.showToast({
               title: error,
@@ -100,6 +133,7 @@ Page({
       success: ({ confirm }) => {
         if (confirm) {
           TodoModel.deleteAll(todosCopy, () => {
+            app.globalData.todos = app.globalData.todos.filter(item => item.status !== 'success')
             this.setData({
               todos: null
             })
