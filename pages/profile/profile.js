@@ -41,7 +41,6 @@ Page({
     this.setData({
       userInfo: logOut()
     })
-    app.globalData.userInfo = null
-    wx.removeStorage({ key: 'login' })
+    app.clearData()
   }
 })

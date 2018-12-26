@@ -32,6 +32,7 @@ Page({
   loginWithWeChat: function ({ detail: { userInfo } }) {
     UserModel.loginWithWeChat(userInfo, (user) => {
       app.globalData.userInfo = user
+      app.fillData()
       wx.setStorage({
         key: 'login',
         data: user,
@@ -77,6 +78,7 @@ Page({
     } else {
       logIn(email, password, (user) => {
         app.globalData.userInfo = user
+        app.fillData()
         wx.navigateBack({
           delta: 1
         })

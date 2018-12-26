@@ -7,24 +7,8 @@ Page({
     maxOrder: undefined,
     todoDraft: '',
   },
-  firstLoadDone: false,
-  onLoad: function () {
-    TodoModel.fetch(items => {
-      app.globalData.todos = items
-      this.showTodos(items)
-    }, (error) => {
-      wx.showToast({
-        title: error,
-        icon: 'none'
-      })
-    })
-  },
   onShow: function () {
-    if (this.firstLoadDone) {
-      this.showTodos(app.globalData.todos)
-    } else {
-      this.firstLoadDone = true
-    }
+    this.showTodos(app.globalData.todos)
   },
   changeData: function ({ detail: { value } }) {
     this.setData({
@@ -89,6 +73,10 @@ Page({
           todos: shouldShow
         })
       }
+    } else {
+      this.setData({
+        todos: []
+      })
     }
   },
   updateTodo: function (e) {
@@ -119,7 +107,7 @@ Page({
         this.setData({
           todos: todosCopy
         })
-        this.showTodos(todosCopy, target.index)
+        this.showTodos(todosCopy)
       }, (error) => {
         wx.showToast({
           title: error,
