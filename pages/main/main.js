@@ -7,6 +7,17 @@ Page({
     maxOrder: undefined,
     todoDraft: '',
   },
+  onLoad: function () {
+    TodoModel.fetch(items => {
+      app.globalData.todos = items
+      this.showTodos(items)
+    }, (error) => {
+      wx.showToast({
+        title: error,
+        icon: 'none'
+      })
+    })
+  },
   onShow: function () {
     this.showTodos(app.globalData.todos)
   },
@@ -47,6 +58,7 @@ Page({
       })
   },
   showTodos: function (rawData) {
+    console.log(rawData)
     if (app.globalData.userInfo) {
       if (arguments[1]) {
         rawData.splice(arguments[1], 1)
