@@ -8,11 +8,29 @@ Page({
     mosaicedEmail: undefined,
     emailDraft: undefined
   },
-  onLoad: function () {
+  onLoad: function (option) {
     let userInfo = app.globalData.userInfo,
       mosaicedEmail = userInfo.email || ''
     if (mosaicedEmail) {
       mosaicedEmail = mosaicedEmail.replace(mosaicedEmail.substring(2, mosaicedEmail.indexOf('@')), '***')
+    }
+    if (option.avatarUrl) {
+      userInfo.avatarUrl = option.avatarUrl
+      new AV.File(userInfo.id, {
+        blob: { uri: option.avatarUrl, },
+      }).save().then(file => {
+        userInfo.avatarUrl = file.url()
+        UserModel.update(['avatarUrl'], userInfo, () => {
+          this.setData({
+            userInfo: userInfo
+          })
+        }, (error) => {
+          wx.showToast({
+            title: error,
+            icon: 'none'
+          })
+        })
+      }).catch(console.error)
     }
     this.setData({
       userInfo: userInfo,
@@ -25,23 +43,9 @@ Page({
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
       success: (res) => {
-        let userCopy = JSON.parse(JSON.stringify(this.data.userInfo))
-        new AV.File(userCopy.id, {
-          blob: { uri: res.tempFilePaths[0], },
-        }).save().then(file => {
-          userCopy.avatarUrl = file.url()
-          UserModel.update(['avatarUrl'], userCopy, () => {
-            this.setData({
-              userInfo: userCopy
-            })
-            app.globalData.userInfo = userCopy
-          }, (error) => {
-            wx.showToast({
-              title: error,
-              icon: 'none'
-            })
-          })
-        }).catch(console.error)
+        wx.redirectTo({
+          url: `./cropper/cropper?src=${res.tempFilePaths[0]}`
+        })
       }
     })
   },

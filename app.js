@@ -25,7 +25,6 @@ App({
   clearData: function () {
     this.globalData.userInfo = null
     this.globalData.todos = null
-    console.log(this.globalData)
     wx.removeStorage({ key: 'login' })
   },
   fillData: function () {

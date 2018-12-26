@@ -4,6 +4,7 @@
     "pages/main/edit/todo-edit",
     "pages/profile/profile",
     "pages/profile/edit/profile-edit",
+    "pages/profile/edit/cropper/cropper",
     "pages/sublists/donelist",
     "pages/sublists/binlist",
     "pages/signup/signup",
